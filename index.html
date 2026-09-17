@@ -15,6 +15,8 @@
     --green: #6bcB77;
     --blue: #4d96ff;
     --purple: #a66bff;
+    --teal: #2ec4b6;
+    --mint: #7fe7c4;
   }
 
   * { box-sizing: border-box; }
@@ -113,6 +115,15 @@
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
+  }
+
+  .preset-btn.break-btn {
+    background: linear-gradient(135deg, var(--teal), var(--mint));
+  }
+  .preset-btn.break-btn.active {
+    background: linear-gradient(135deg, var(--teal), var(--mint));
+    outline: 3px solid #fff;
+    outline-offset: 2px;
   }
 
   .ring-wrap {
@@ -225,6 +236,7 @@
   <div class="subtitle">Pick a mission length and blast off into focus time!</div>
 
   <div class="presets" id="presets">
+    <button class="preset-btn break-btn" data-mins="10" data-break="true">10 min · Break Time</button>
     <button class="preset-btn active" data-mins="15">15 min</button>
     <button class="preset-btn" data-mins="30">30 min</button>
     <button class="preset-btn" data-mins="45">45 min</button>
@@ -277,13 +289,15 @@
   ringProgress.style.strokeDasharray = `${CIRCUMFERENCE}`;
   ringProgress.style.strokeDashoffset = '0';
 
-  const mascots = ['🚀', '🌟', '🦄', '🌈', '🎈'];
+  const focusMascots = ['🚀', '🌟', '🦄', '🌈', '🎈'];
+  const breakMascots = ['🍎', '🧃', '🍪', '☁️', '😌'];
 
   let selectedMinutes = 15;
   let totalSeconds = selectedMinutes * 60;
   let remainingSeconds = totalSeconds;
   let intervalId = null;
   let state = 'idle'; // idle | running | paused | stopped
+  let isBreak = false;
 
   function formatTime(sec) {
     const m = Math.floor(sec / 60).toString().padStart(2, '0');
@@ -331,7 +345,8 @@
     }
     state = 'running';
     mascot.classList.add('spin');
-    setStatus('Focusing…');
+    mascot.textContent = isBreak ? breakMascots[0] : focusMascots[0];
+    setStatus(isBreak ? 'Break Time…' : 'Focusing…');
     cheer.textContent = '';
     setButtonsForState();
     updateDisplay();
@@ -365,8 +380,8 @@
     state = 'idle';
     remainingSeconds = totalSeconds;
     mascot.classList.remove('spin');
-    mascot.textContent = '🚀';
-    setStatus('Ready');
+    mascot.textContent = isBreak ? '☕' : '🚀';
+    setStatus(isBreak ? 'Break Time' : 'Ready');
     cheer.textContent = '';
     setButtonsForState();
     updateDisplay();
@@ -377,8 +392,13 @@
     state = 'stopped';
     mascot.classList.remove('spin');
     mascot.textContent = '🎉';
-    setStatus('Journey complete!');
-    cheer.textContent = 'Great job Dishika! You finished your focus journey! ✨';
+    if (isBreak) {
+      setStatus('Break complete!');
+      cheer.textContent = 'Break\'s over! Ready for your next focus mission? 🚀';
+    } else {
+      setStatus('Journey complete!');
+      cheer.textContent = 'Great job Dishika! You finished your focus journey! ✨';
+    }
     setButtonsForState();
     launchConfetti();
     playChime();
@@ -389,11 +409,12 @@
     selectedMinutes = mins;
     totalSeconds = mins * 60;
     remainingSeconds = totalSeconds;
+    isBreak = btn.dataset.break === 'true';
     presetButtons.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state = 'idle';
-    mascot.textContent = '🚀';
-    setStatus('Ready');
+    mascot.textContent = isBreak ? '☕' : '🚀';
+    setStatus(isBreak ? 'Break Time' : 'Ready');
     cheer.textContent = '';
     setButtonsForState();
     updateDisplay();
