@@ -136,30 +136,33 @@
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 24px;
     align-items: stretch;
-    margin-top: 20px;
-    height: calc(100dvh - var(--header-h, 200px) - 20px);
-    min-height: 360px;
-    max-height: 620px;
+    height: calc(100dvh - var(--header-h, 240px) - 20px);
+    min-height: 340px;
+    max-height: 580px;
   }
-  .parallel-grid section {
-    margin-top: 0;
+  .parallel-grid .panel-col {
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
-  .parallel-grid .section-head { flex: 0 0 auto; }
+  .parallel-grid .col-label {
+    flex: 0 0 auto;
+    margin: 0 0 10px;
+    font-size: 1rem;
+    color: var(--leaf-dark);
+  }
   .parallel-grid .panel {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
   }
-  #types .panel {
+  .types-col .panel {
     display: flex;
     flex-direction: column;
     overflow: hidden;
   }
-  #types .panel .forest-tabs { flex: 0 0 auto; }
-  #types .panel .forest-detail {
+  .types-col .panel .forest-tabs { flex: 0 0 auto; }
+  .types-col .panel .forest-detail {
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
@@ -304,29 +307,69 @@
     border-radius: 999px;
   }
 
-  /* ---------- Table ---------- */
-  .table-wrap { overflow-x: auto; margin-top: 10px; }
-  table.forest-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-    min-width: 560px;
-  }
-  table.forest-table th {
-    background: var(--leaf);
+  /* ---------- Location card (Where Do Forests Grow) ---------- */
+  .location-card {
+    border-radius: 24px;
+    padding: 26px 24px;
     color: #fff;
+    text-align: center;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.16);
+    animation: fadeIn 0.3s ease;
+    margin: 4px 0 14px;
+  }
+  .location-card .loc-grove {
+    font-size: 2.6rem;
+    letter-spacing: 10px;
+    margin-bottom: 6px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .location-card h3 {
+    margin: 0 0 16px;
+    font-size: 1.3rem;
     font-family: 'Baloo 2', cursive;
-    padding: 10px;
+  }
+  .location-card .loc-row {
     text-align: left;
-    position: sticky;
-    top: 0;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    line-height: 1.5;
   }
-  table.forest-table td {
-    padding: 10px;
-    border-bottom: 1px solid #e3efe0;
-    vertical-align: top;
+  .location-card .loc-label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
   }
-  table.forest-table tr:nth-child(even) td { background: #f4faf2; }
+  .location-card .loc-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .location-card .loc-chip {
+    background: rgba(255,255,255,0.92);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 4px 11px;
+    border-radius: 999px;
+  }
+  .location-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .location-dots { display: flex; gap: 6px; }
+  .location-dots .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d8e8d8;
+    cursor: pointer;
+  }
+  .location-dots .dot.active { background: var(--leaf); }
 
   /* ---------- Layers diagram ---------- */
   .layer-diagram {
@@ -827,8 +870,7 @@
 </header>
 
 <nav class="tabs" id="tabnav">
-  <a href="#intro">🌱 Intro</a>
-  <a href="#types">🌳 Forest Types</a>
+  <a href="#intro-types">🌳 Intro &amp; Types</a>
   <a href="#where">🗺️ Where</a>
   <a href="#role">🐿️ Role &amp; Uses</a>
   <a href="#conserve">🛡️ Conserve</a>
@@ -843,40 +885,40 @@
 
 <main>
 
-  <!-- INTRO + FOREST TYPES (side by side) -->
-  <div class="parallel-grid">
-    <section id="intro">
-      <div class="section-head">
-        <div class="icon-badge">🌱</div>
-        <h2><span class="eyebrow">Getting started</span>What is a Forest?</h2>
-      </div>
-      <div class="panel">
-        <p class="lead"><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. The kind of trees and plants that grow in a forest depend on the <strong>climate</strong> and <strong>soil</strong> of the place.</p>
-        <div class="fact-grid">
-          <div class="fact-card">
-            <h3>🌿 Natural Vegetation</h3>
-            <p>Forests grow naturally in a region — that's why they are called <strong>natural vegetation</strong>.</p>
+  <!-- INTRO + FOREST TYPES (merged banner, side by side content) -->
+  <section id="intro-types">
+    <div class="section-head">
+      <div class="icon-badge">🌳</div>
+      <h2><span class="eyebrow">Getting started</span>Forest Intro and Types</h2>
+    </div>
+    <div class="parallel-grid">
+      <div class="panel-col intro-col">
+        <h3 class="col-label">🌱 What is a Forest?</h3>
+        <div class="panel">
+          <p class="lead"><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. The kind of trees and plants that grow in a forest depend on the <strong>climate</strong> and <strong>soil</strong> of the place.</p>
+          <div class="fact-grid">
+            <div class="fact-card">
+              <h3>🌿 Natural Vegetation</h3>
+              <p>Forests grow naturally in a region — that's why they are called <strong>natural vegetation</strong>.</p>
+            </div>
+            <div class="fact-card">
+              <h3>🏡 Natural Habitat</h3>
+              <p>Forests provide shelter to many wild animals — that's why they are called the <strong>natural habitat of the animals</strong>.</p>
+            </div>
           </div>
-          <div class="fact-card">
-            <h3>🏡 Natural Habitat</h3>
-            <p>Forests provide shelter to many wild animals — that's why they are called the <strong>natural habitat of the animals</strong>.</p>
-          </div>
+          <p class="lead" style="margin-top:16px;">India has a great diversity of natural ecosystems, and our forests can be divided into <strong>five main groups</strong>. Explore each one alongside!</p>
         </div>
-        <p class="lead" style="margin-top:16px;">India has a great diversity of natural ecosystems, and our forests can be divided into <strong>five main groups</strong>. Explore each one alongside!</p>
       </div>
-    </section>
 
-    <section id="types">
-      <div class="section-head">
-        <div class="icon-badge">🌳</div>
-        <h2><span class="eyebrow">Explore</span>Types of Forests in India</h2>
+      <div class="panel-col types-col">
+        <h3 class="col-label">🌳 Explore the 5 Types</h3>
+        <div class="panel">
+          <div class="forest-tabs" id="forest-tabs"></div>
+          <div class="forest-detail" id="forest-detail"></div>
+        </div>
       </div>
-      <div class="panel">
-        <div class="forest-tabs" id="forest-tabs"></div>
-        <div class="forest-detail" id="forest-detail"></div>
-      </div>
-    </section>
-  </div>
+    </div>
+  </section>
 
   <!-- WHERE -->
   <section id="where">
@@ -885,13 +927,13 @@
       <h2><span class="eyebrow">Locate</span>Where Do Forests Grow in India?</h2>
     </div>
     <div class="panel">
-      <div class="table-wrap">
-        <table class="forest-table">
-          <thead>
-            <tr><th>Name of Forest</th><th>Places Found</th><th>States / Union Territories</th><th>Examples of Plants/Trees</th></tr>
-          </thead>
-          <tbody id="forest-table-body"></tbody>
-        </table>
+      <p class="lead">Tap a forest type below — or use the arrows — to see where it grows, one at a time!</p>
+      <div class="forest-tabs" id="location-tabs"></div>
+      <div class="location-card" id="location-card"></div>
+      <div class="location-nav">
+        <button class="quiz-btn" id="loc-prev">⬅ Prev</button>
+        <div class="location-dots" id="location-dots"></div>
+        <button class="quiz-btn" id="loc-next">Next ➜</button>
       </div>
     </div>
   </section>
@@ -1448,18 +1490,81 @@
   });
   renderForestDetail(0);
 
-  // ---------------- LOCATION TABLE ----------------
-  var tbody = document.getElementById("forest-table-body");
-  locationTable.forEach(function (row) {
+  // ---------------- LOCATION CARD EXPLORER ("Where Do Forests Grow") ----------------
+  function chipify(str) {
+    var parts = str.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    var merged = [];
+    parts.forEach(function (p) {
+      if (p.toLowerCase() === 'etc.' && merged.length) {
+        merged[merged.length - 1] += ', etc.';
+      } else {
+        merged.push(p);
+      }
+    });
+    return merged;
+  }
+
+  var locationTabsEl = document.getElementById("location-tabs");
+  var locationCardEl = document.getElementById("location-card");
+  var locationDotsEl = document.getElementById("location-dots");
+  var locIndex = 0;
+
+  function renderLocationCard() {
+    var row = locationTable[locIndex];
     var f = forestTypes.filter(function (x) { return x.key === row.key; })[0];
-    var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td><strong>' + f.emoji + ' ' + f.name + '</strong></td>' +
-      '<td>' + row.places + '</td>' +
-      '<td>' + row.states + '</td>' +
-      '<td>' + row.examples + '</td>';
-    tbody.appendChild(tr);
+    var stateChips = chipify(row.states);
+    var exampleChips = chipify(row.examples);
+    locationCardEl.style.background = f.color;
+    locationCardEl.innerHTML =
+      '<div class="loc-grove">' + f.emoji + f.emoji + f.emoji + '</div>' +
+      '<h3>' + f.name + '</h3>' +
+      '<div class="loc-row"><span class="loc-label">☔ Found</span>' + row.places + '</div>' +
+      '<div class="loc-row"><span class="loc-label">📍 States / Union Territories</span>' +
+        '<div class="loc-chip-row">' + stateChips.map(function (s) { return '<span class="loc-chip">' + s + '</span>'; }).join('') + '</div>' +
+      '</div>' +
+      '<div class="loc-row"><span class="loc-label">🌿 Example Plants / Trees</span>' +
+        '<div class="loc-chip-row">' + exampleChips.map(function (s) { return '<span class="loc-chip">🌱 ' + s + '</span>'; }).join('') + '</div>' +
+      '</div>';
+
+    Array.prototype.forEach.call(locationTabsEl.children, function (btn, i) {
+      btn.classList.toggle('active', i === locIndex);
+    });
+    Array.prototype.forEach.call(locationDotsEl.children, function (dot, i) {
+      dot.classList.toggle('active', i === locIndex);
+    });
+  }
+
+  locationTable.forEach(function (row, i) {
+    var f = forestTypes.filter(function (x) { return x.key === row.key; })[0];
+    var btn = document.createElement('button');
+    btn.className = 'forest-tab-btn' + (i === 0 ? ' active' : '');
+    btn.style.background = f.color;
+    btn.textContent = f.emoji + ' ' + f.name;
+    btn.addEventListener('click', function () {
+      locIndex = i;
+      renderLocationCard();
+    });
+    locationTabsEl.appendChild(btn);
+
+    var dot = document.createElement('span');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', function () {
+      locIndex = i;
+      renderLocationCard();
+    });
+    locationDotsEl.appendChild(dot);
   });
+
+  document.getElementById('loc-prev').addEventListener('click', function () {
+    locIndex = (locIndex - 1 + locationTable.length) % locationTable.length;
+    renderLocationCard();
+  });
+  document.getElementById('loc-next').addEventListener('click', function () {
+    locIndex = (locIndex + 1) % locationTable.length;
+    renderLocationCard();
+  });
+
+  renderLocationCard();
 
   // ---------------- LAYER DIAGRAM ----------------
   var layerDiagram = document.getElementById("layer-diagram");
@@ -1785,9 +1890,9 @@
 
   // ---------------- HEADER HEIGHT (so the parallel intro/types row fits the viewport) ----------------
   function updateHeaderHeight() {
-    var navEl = document.querySelector('nav.tabs');
-    if (!navEl) return;
-    var h = Math.round(navEl.getBoundingClientRect().bottom + window.scrollY);
+    var grid = document.querySelector('.parallel-grid');
+    if (!grid) return;
+    var h = Math.round(grid.getBoundingClientRect().top + window.scrollY);
     document.documentElement.style.setProperty('--header-h', h + 'px');
   }
   updateHeaderHeight();
