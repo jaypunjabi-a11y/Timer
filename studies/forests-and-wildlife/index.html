@@ -424,6 +424,153 @@
   .callout p { margin: 0; font-size: 0.92rem; line-height: 1.6; }
   .callout .tag-emoji { font-size: 1.6rem; margin-bottom: 6px; display: inline-block; }
 
+  /* ---------- Did you know / continent callout ---------- */
+  .callout.didyouknow {
+    background: linear-gradient(135deg, #fff8e1, #ffedb3);
+    border: 2px solid var(--sun);
+  }
+  .continent-order {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+  }
+  .continent-pill {
+    background: #fff;
+    border: 2px solid #f5c400;
+    color: #6b5300;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .continent-pill .rank { opacity: 0.6; margin-right: 4px; }
+
+  /* ---------- Animal chip groups ---------- */
+  .animal-group { margin-top: 16px; }
+  .animal-group h3 {
+    font-size: 1rem;
+    color: var(--leaf-dark);
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .animal-group .group-note { font-size: 0.82rem; color: #5a6e5c; margin: 0 0 8px; }
+  .animal-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .animal-chip {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    color: var(--leaf-dark);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+  .animal-chip.special { background: var(--leaf-light); border-color: var(--leaf); }
+  .animal-chip.bird { border-color: var(--sky); color: #1c5faa; }
+  .animal-chip.coastal { border-color: var(--river); color: #0b7d75; }
+
+  /* ---------- Parks explorer ---------- */
+  .park-search {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 2px solid var(--leaf-light);
+    border-radius: 999px;
+    margin-bottom: 16px;
+    outline: none;
+    box-sizing: border-box;
+  }
+  .park-search:focus { border-color: var(--leaf); }
+  .park-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .park-card {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 6px 0 rgba(63,145,66,0.1);
+  }
+  .park-card h3 {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    color: var(--leaf-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .park-card .park-loc {
+    display: inline-block;
+    background: var(--sky);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .park-card .park-forest {
+    display: inline-block;
+    background: var(--soil);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    margin-left: 4px;
+  }
+  .park-card p { margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; }
+  .park-empty { text-align: center; color: #8a9c8c; font-weight: 600; padding: 20px; grid-column: 1 / -1; }
+
+  /* ---------- Factfile trading cards ---------- */
+  .factfile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .factfile-card {
+    background: linear-gradient(160deg, #fff, #f4faf2);
+    border: 3px solid var(--leaf-light);
+    border-radius: 22px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 10px 0 rgba(63,145,66,0.1);
+  }
+  .factfile-card .ff-emoji {
+    font-size: 3rem;
+    background: #fff;
+    border: 3px solid var(--sun);
+    border-radius: 50%;
+    width: 88px;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+  }
+  .factfile-card h3 { margin: 0 0 8px; font-size: 1.05rem; color: var(--leaf-dark); }
+  .factfile-card .ff-row { text-align: left; margin-top: 10px; font-size: 0.85rem; line-height: 1.5; }
+  .factfile-card .ff-row strong { color: var(--leaf-dark); }
+  .ff-diet {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .ff-diet.carnivorous { background: #e03131; }
+  .ff-diet.herbivorous { background: #2f9e44; }
+
   /* ---------- Glossary flip cards ---------- */
   .glossary-grid {
     display: grid;
@@ -573,6 +720,9 @@
   <a href="#where">🗺️ Where</a>
   <a href="#role">🐿️ Role &amp; Uses</a>
   <a href="#conserve">🛡️ Conserve</a>
+  <a href="#subcontinent">🌏 Subcontinent</a>
+  <a href="#parks">🏞️ Parks</a>
+  <a href="#factfile">🐯 Factfile</a>
   <a href="#glossary">📖 Glossary</a>
   <a href="#quiz">🎯 Quiz</a>
 </nav>
@@ -687,6 +837,83 @@
     </div>
   </section>
 
+  <!-- SUBCONTINENT -->
+  <section id="subcontinent">
+    <div class="section-head">
+      <div class="icon-badge">🌏</div>
+      <h2><span class="eyebrow">Explore</span>Wildlife of the Indian Subcontinent</h2>
+    </div>
+    <div class="panel">
+      <div class="callout didyouknow">
+        <span class="tag-emoji">💡</span>
+        <h3>Did You Know?</h3>
+        <p>A <strong>continent</strong> is one of several large landmasses on Earth. There are seven regions commonly regarded as continents. The continents known to us are, from largest in size to smallest:</p>
+        <div class="continent-order" id="continent-order"></div>
+        <p>Long ago, when the continents began to move to reach their current positions, our country India — along with a few neighbouring countries — was a part of the huge Asian continent, and was called the <strong>Indian Subcontinent</strong> (namely India, Pakistan, Bangladesh, Nepal, Bhutan, and the island countries of Sri Lanka and Maldives).</p>
+      </div>
+
+      <p class="lead" style="margin-top:18px;">The wildlife found in the countries forming the Subcontinent are very similar, with just a few exceptions.</p>
+
+      <div class="animal-group">
+        <h3>🐘 Animal Life of the Subcontinent</h3>
+        <div class="animal-chip-row" id="mammal-chips"></div>
+      </div>
+
+      <div class="animal-group">
+        <h3>🐆 High-Altitude Specials</h3>
+        <p class="group-note">Due to the high altitudes in places like Nepal and Bhutan, these are found:</p>
+        <div class="animal-chip-row" id="altitude-chips"></div>
+      </div>
+
+      <div class="animal-group">
+        <h3>🐬 Coastal &amp; Island Specials</h3>
+        <p class="group-note">In Bangladesh and the island countries of Sri Lanka and Maldives, due to the proximity of the ocean, these are found:</p>
+        <div class="animal-chip-row" id="coastal-chips"></div>
+      </div>
+
+      <div class="animal-group">
+        <h3>🦜 Birds of the Subcontinent</h3>
+        <div class="animal-chip-row" id="bird-chips"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARKS -->
+  <section id="parks">
+    <div class="section-head">
+      <div class="icon-badge">🏞️</div>
+      <h2><span class="eyebrow">Discover</span>National Parks &amp; Wildlife Sanctuaries</h2>
+    </div>
+    <div class="panel">
+      <div class="fact-grid">
+        <div class="fact-card">
+          <h3>🏞️ National Park</h3>
+          <p>A protected area to conserve the natural environment and the wildlife in it, and also provide recreation (an area of environmental importance or natural beauty protected by the state which the public may visit). Killing, hunting, shooting or capturing of any species of bird or animal is <strong>not allowed</strong>.</p>
+        </div>
+        <div class="fact-card">
+          <h3>🦌 Wildlife Sanctuary</h3>
+          <p>A protected area, usually in natural condition, through the management of human activities to provide and maintain the habitat of wild animals and the habitats that support them. Killing, hunting, shooting or capturing of any species of bird or animal is <strong>not allowed</strong>.</p>
+        </div>
+      </div>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 10px;">🔍 Explore Important National Parks &amp; Sanctuaries in India</h3>
+      <input type="text" class="park-search" id="park-search" placeholder="🔍 Search by park name, animal or state...">
+      <div class="park-grid" id="park-grid"></div>
+    </div>
+  </section>
+
+  <!-- FACTFILE -->
+  <section id="factfile">
+    <div class="section-head">
+      <div class="icon-badge">🐯</div>
+      <h2><span class="eyebrow">Meet the animals</span>A Factfile of Wildlife Found in India</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Here is a list of selected animals that you have already learnt about in class.</p>
+      <div class="factfile-grid" id="factfile-grid"></div>
+    </div>
+  </section>
+
   <!-- GLOSSARY -->
   <section id="glossary">
     <div class="section-head">
@@ -708,7 +935,7 @@
     <div class="panel" id="quiz-panel"></div>
   </section>
 
-  <div class="more-coming">🚧 More topics from this chapter (like Wildlife) are coming soon — check back for updates! 🚧</div>
+  <div class="more-coming">🚧 More animals for the Wildlife Factfile are coming soon — check back for updates! 🚧</div>
 
   <footer>Made with 🌿 for Dishika's Social Studies revision · Unit 2: Forests and Wildlife</footer>
 </main>
@@ -817,6 +1044,56 @@
     { title: "🔥 Forest Fires", body: "Sometimes people leave burning cigarettes and open fires in the forests. The dry twigs and branches immediately catch fire, and it spreads and engulfs the entire forest — destroying many trees, plants and killing many animals and birds." }
   ];
 
+  var continents = ["Asia", "Africa", "North America", "South America", "Antarctica", "Europe", "Australia"];
+
+  var subcontinentMammals = [
+    "Asiatic elephants", "Chinkaras (Indian gazelle)", "Spotted deer", "Jackals", "Sloth bears",
+    "Royal Bengal tigers", "Camels", "Wild goats (mountain goat)", "Sambars (Indian stag)", "Gorals",
+    "Asiatic wild asses", "Wild buffaloes (gaur)", "Hog deer (para)", "Asiatic wild dogs (dholes)",
+    "Striped hyenas", "Wolves", "Monkeys", "Gharials", "Crocodilians", "Snakes", "Lizards", "Bats", "Frogs"
+  ];
+
+  var altitudeSpecials = ["Snow leopards", "Red pandas", "Musk deer", "Marco Polo sheep"];
+
+  var coastalSpecials = ["Turtles", "Whales", "Dolphins", "Tropical fish"];
+
+  var subcontinentBirds = [
+    "Parakeets", "Peafowls", "Warblers", "Kingfishers", "Partridges", "Robins", "Bulbuls",
+    "Grey-headed fishing eagles", "Black-shouldered kites", "Quails", "Black kites (pariah kites)",
+    "Cuckoos", "White-tailed eagles", "Owls", "Himalayan griffons", "Geese", "Ducks", "Flamingoes",
+    "Pelicans", "Spoon bills", "Storks", "Plovers", "Curlews", "Sand pipers", "Snipes", "Herons"
+  ];
+
+  var parksData = [
+    { name: "Corbett National Park", emoji: "🐘", animals: "Asiatic elephants, Tigers, Leopards and Crocodiles", location: "Uttarakhand", forest: "Deciduous" },
+    { name: "Kaziranga National Park", emoji: "🦏", animals: "Rhinos, Tigers and Leopards", location: "Assam", forest: "Swamps and grasslands" },
+    { name: "Sundarbans Tiger Reserve", emoji: "🐅", animals: "Bengal Tigers, Olive Ridley Sea Turtles", location: "West Bengal", forest: "Marshy/tidal" },
+    { name: "Gir Wildlife Sanctuary", emoji: "🦁", animals: "Asiatic Lions and Leopards", location: "Gujarat", forest: "Mixed deciduous" },
+    { name: "Kanha National Park", emoji: "🐆", animals: "Tigers, Leopards and sloth bears", location: "Madhya Pradesh", forest: "Bamboo and sal" },
+    { name: "Bandipur National Park", emoji: "🐘", animals: "Asiatic elephants and gaurs", location: "Karnataka", forest: "Dry and mixed deciduous" },
+    { name: "Periyar Wildlife Sanctuary and National Park", emoji: "🐯", animals: "Asiatic elephants, Tigers, Nilgiri Langurs and Nilgiri Tahrs", location: "Western Ghats of Kerala", forest: "Evergreen" },
+    { name: "Chilka Lake Wildlife Park", emoji: "🦩", animals: "Pink-coloured flamingoes, grey-lag geese, Siberian cranes and white-bellied sea eagles", location: "Odisha", forest: "Largest salt and freshwater lake in Asia" },
+    { name: "Bharatpur Bird Sanctuary", emoji: "🐦", animals: "Sambar, Chital, Nilgai, wild boars, Painted Storks, egrets, cormorants, jacanas, harriers, fishing eagles", location: "Rajasthan", forest: "Dry deciduous forests and extensive grasslands" },
+    { name: "Ranthambore National Park", emoji: "🐅", animals: "Tigers, Leopards and wild boars", location: "Rajasthan", forest: "Dry deciduous and thorny" }
+  ];
+
+  var factfileAnimals = [
+    {
+      name: "The Royal Bengal Tiger",
+      emoji: "🐯",
+      features: "The Royal Bengal Tiger is the largest member of the cat family. It is the national animal of India and a powerful predator.",
+      habitat: "You find them in dense jungles with thick grasslands and undergrowth in which they can camouflage and stalk or wait for their prey.",
+      food: "Carnivorous"
+    },
+    {
+      name: "BlackBuck Antelope (Kala Hiran)",
+      emoji: "🦌",
+      features: "It has ringed horns. It is one of the fastest running animals on earth.",
+      habitat: "Lives in open plains in herds where it can move fast.",
+      food: "Herbivorous"
+    }
+  ];
+
   var glossary = [
     { term: "Natural Vegetation", def: "Plants that grow naturally in a region, without being planted by people." },
     { term: "Natural Habitat", def: "The natural home of an animal — forests shelter and provide for wild animals." },
@@ -829,7 +1106,11 @@
     { term: "Endangered", def: "Animals that are at risk of becoming extinct." },
     { term: "Chipko Movement", def: "'Chipko' means 'to hug' in Hindi. A movement by Uttarakhand peasants to stop tree felling by wood contractors, strengthened by Sunder Lal Bahuguna." },
     { term: "Van Mahotsav", def: "A festival celebrated in the first week of July across India to encourage people to plant trees." },
-    { term: "Judicious Use", def: "Using natural resources wisely, so they are not wasted or overused." }
+    { term: "Judicious Use", def: "Using natural resources wisely, so they are not wasted or overused." },
+    { term: "Continent", def: "One of several large landmasses on Earth. There are seven regions commonly regarded as continents." },
+    { term: "Indian Subcontinent", def: "India, Pakistan, Bangladesh, Nepal, Bhutan, and the island countries of Sri Lanka and Maldives — once part of the huge Asian continent." },
+    { term: "National Park", def: "A protected area to conserve the natural environment and wildlife, and also provide recreation. Hunting is not allowed." },
+    { term: "Wildlife Sanctuary", def: "A protected area, usually in natural condition, managed to provide and maintain the habitat of wild animals. Hunting is not allowed." }
   ];
 
   var quizData = [
@@ -848,7 +1129,22 @@
     { q: "What is the cutting down of forests called?", options: ["Afforestation", "Deforestation", "Conservation", "Cultivation"], answer: 1 },
     { q: "Which movement, meaning 'to hug' in Hindi, was started by peasants in Uttarakhand to stop tree felling?", options: ["Van Mahotsav", "Chipko Movement", "Green Revolution", "Silent Valley Movement"], answer: 1 },
     { q: "Which festival is celebrated in the first week of July across India to encourage tree planting?", options: ["Van Mahotsav", "Chipko Movement", "Harvest Festival", "Republic Day"], answer: 0 },
-    { q: "According to a recent Forest Survey of India study, what percentage of India's land area is under forest cover?", options: ["50.12%", "10.05%", "24.62%", "75.30%"], answer: 2 }
+    { q: "According to a recent Forest Survey of India study, what percentage of India's land area is under forest cover?", options: ["50.12%", "10.05%", "24.62%", "75.30%"], answer: 2 },
+    { q: "Which is the largest continent, and the one India was once part of?", options: ["Africa", "Asia", "Europe", "Australia"], answer: 1 },
+    { q: "Which of these is the smallest continent?", options: ["South America", "Antarctica", "Australia", "Asia"], answer: 2 },
+    { q: "Which of these is NOT one of the countries that form the Indian Subcontinent?", options: ["Bhutan", "Sri Lanka", "China", "Nepal"], answer: 2 },
+    { q: "Which animals are found in high-altitude places like Nepal and Bhutan?", options: ["Snow leopards and red pandas", "Whales and dolphins", "Flamingoes and pelicans", "Crocodiles and gharials"], answer: 0 },
+    { q: "In Bangladesh, Sri Lanka and Maldives, which animals are found due to the proximity of the ocean?", options: ["Snow leopards", "Turtles, whales and dolphins", "Wild buffaloes", "Himalayan griffons"], answer: 1 },
+    { q: "What is a protected area that conserves nature and wildlife while also allowing public recreation called?", options: ["A wildlife sanctuary", "A national park", "A grazing ground", "A forest floor"], answer: 1 },
+    { q: "Is hunting, shooting or capturing any bird or animal allowed in a national park or wildlife sanctuary?", options: ["Yes, always", "Only at night", "No, it is not allowed", "Only for scientists"], answer: 2 },
+    { q: "Corbett National Park, home to Asiatic elephants, tigers, leopards and crocodiles, is located in which state?", options: ["Uttarakhand", "Assam", "Gujarat", "Kerala"], answer: 0 },
+    { q: "Which national park in Assam, set in swamps and grasslands, is home to rhinos, tigers and leopards?", options: ["Kanha National Park", "Kaziranga National Park", "Ranthambore National Park", "Gir Wildlife Sanctuary"], answer: 1 },
+    { q: "The Sundarbans Tiger Reserve, home to Bengal Tigers and Olive Ridley Sea Turtles, is in which state?", options: ["West Bengal", "Rajasthan", "Odisha", "Karnataka"], answer: 0 },
+    { q: "Gir Wildlife Sanctuary, home to Asiatic Lions and Leopards, is located in which state?", options: ["Madhya Pradesh", "Gujarat", "Kerala", "Karnataka"], answer: 1 },
+    { q: "Which animal is the national animal of India and the largest member of the cat family?", options: ["Asiatic Lion", "Blackbuck Antelope", "Royal Bengal Tiger", "Leopard"], answer: 2 },
+    { q: "The Royal Bengal Tiger is found in dense jungles with thick grasslands where it can:", options: ["Fly to catch birds", "Camouflage and stalk its prey", "Live underwater", "Build nests in trees"], answer: 1 },
+    { q: "What is the Blackbuck Antelope (Kala Hiran) known for?", options: ["Its long trunk", "Its ringed horns and speed", "Living underwater", "Its feathers"], answer: 1 },
+    { q: "What is the food habit of the Blackbuck Antelope?", options: ["Carnivorous", "Herbivorous", "Omnivorous", "It doesn't eat"], answer: 1 }
   ];
 
   // ---------------- FOREST TYPE EXPLORER ----------------
@@ -932,6 +1228,73 @@
       item.classList.toggle('open');
     });
     accWrap.appendChild(item);
+  });
+
+  // ---------------- CONTINENT ORDER ----------------
+  var continentOrder = document.getElementById("continent-order");
+  continents.forEach(function (c, i) {
+    var span = document.createElement('span');
+    span.className = 'continent-pill';
+    span.innerHTML = '<span class="rank">#' + (i + 1) + '</span>' + c;
+    continentOrder.appendChild(span);
+  });
+
+  // ---------------- ANIMAL CHIP GROUPS ----------------
+  function fillChips(id, list, cls) {
+    var wrap = document.getElementById(id);
+    list.forEach(function (a) {
+      var span = document.createElement('span');
+      span.className = 'animal-chip' + (cls ? ' ' + cls : '');
+      span.textContent = a;
+      wrap.appendChild(span);
+    });
+  }
+  fillChips('mammal-chips', subcontinentMammals, '');
+  fillChips('altitude-chips', altitudeSpecials, 'special');
+  fillChips('coastal-chips', coastalSpecials, 'coastal');
+  fillChips('bird-chips', subcontinentBirds, 'bird');
+
+  // ---------------- PARKS EXPLORER ----------------
+  var parkGrid = document.getElementById("park-grid");
+  var parkSearch = document.getElementById("park-search");
+
+  function renderParks(filter) {
+    var q = (filter || '').trim().toLowerCase();
+    parkGrid.innerHTML = '';
+    var matches = parksData.filter(function (p) {
+      if (!q) return true;
+      return (p.name + ' ' + p.animals + ' ' + p.location + ' ' + p.forest).toLowerCase().indexOf(q) !== -1;
+    });
+    if (matches.length === 0) {
+      parkGrid.innerHTML = '<div class="park-empty">🌿 No parks found — try a different search!</div>';
+      return;
+    }
+    matches.forEach(function (p) {
+      var card = document.createElement('div');
+      card.className = 'park-card';
+      card.innerHTML =
+        '<h3>' + p.emoji + ' ' + p.name + '</h3>' +
+        '<span class="park-loc">📍 ' + p.location + '</span>' +
+        '<span class="park-forest">🌳 ' + p.forest + '</span>' +
+        '<p><strong>Animals:</strong> ' + p.animals + '</p>';
+      parkGrid.appendChild(card);
+    });
+  }
+  renderParks('');
+  parkSearch.addEventListener('input', function () { renderParks(parkSearch.value); });
+
+  // ---------------- FACTFILE ----------------
+  var factfileGrid = document.getElementById("factfile-grid");
+  factfileAnimals.forEach(function (a) {
+    var card = document.createElement('div');
+    card.className = 'factfile-card';
+    card.innerHTML =
+      '<div class="ff-emoji">' + a.emoji + '</div>' +
+      '<h3>' + a.name + '</h3>' +
+      '<div class="ff-row"><strong>Striking features:</strong> ' + a.features + '</div>' +
+      '<div class="ff-row"><strong>Habitat:</strong> ' + a.habitat + '</div>' +
+      '<span class="ff-diet ' + a.food.toLowerCase() + '">' + a.food + '</span>';
+    factfileGrid.appendChild(card);
   });
 
   // ---------------- GLOSSARY ----------------
