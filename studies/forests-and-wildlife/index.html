@@ -1089,6 +1089,16 @@
     }
   ];
 
+  // Mirrors the textbook's "Location of forests in India" table exactly (separate from the
+  // richer descriptions above, which are used only in the Forest Type Explorer cards).
+  var locationTable = [
+    { key: "evergreen", places: "In areas of heavy rainfall.", states: "Assam, Arunachal Pradesh, Meghalaya and Tripura.", examples: "Rosewood, Ebony, Mango, Neem, Mahogany, etc." },
+    { key: "deciduous", places: "In warmer areas.", states: "Andhra Pradesh, Bihar, Odisha and foothills of the Himalayas and areas of the Southern Plateau.", examples: "Teak, Sal, Shesham, etc." },
+    { key: "thorn", places: "In areas of very little rainfall.", states: "Rajasthan, parts of Madhya Pradesh and Uttar Pradesh.", examples: "Babool, Keekar, Date palms, etc." },
+    { key: "coniferous", places: "In cold regions.", states: "Jammu and Kashmir", examples: "Fir, Pine, Cedar, etc." },
+    { key: "marshy", places: "In deltas of rivers which have clayey soil.", states: "West Bengal, Andhra Pradesh and Odisha.", examples: "Mangroves (sundri trees in Sundarbans)" }
+  ];
+
   var layers = [
     { key: "canopy", title: "🌳 Canopy (Leafy Treetops)", detail: "Some birds and insects live high up in the leafy treetops, called the canopy, sheltering a large number of living things." },
     { key: "understorey", title: "🐆 Understorey (Middle Layer)", detail: "Climbers live lower down. This middle layer is called the understorey. Panther and other wild cats, like the leopard, are excellent tree climbers and live here." },
@@ -1338,13 +1348,14 @@
 
   // ---------------- LOCATION TABLE ----------------
   var tbody = document.getElementById("forest-table-body");
-  forestTypes.forEach(function (f) {
+  locationTable.forEach(function (row) {
+    var f = forestTypes.filter(function (x) { return x.key === row.key; })[0];
     var tr = document.createElement('tr');
     tr.innerHTML =
       '<td><strong>' + f.emoji + ' ' + f.name + '</strong></td>' +
-      '<td>' + f.facts[0] + '</td>' +
-      '<td>' + f.where + '</td>' +
-      '<td>' + f.trees.join(', ') + '</td>';
+      '<td>' + row.places + '</td>' +
+      '<td>' + row.states + '</td>' +
+      '<td>' + row.examples + '</td>';
     tbody.appendChild(tr);
   });
 
