@@ -570,6 +570,17 @@
   }
   .ff-diet.carnivorous { background: #e03131; }
   .ff-diet.herbivorous { background: #2f9e44; }
+  .ff-diet.omnivorous { background: #f08c00; }
+  .ff-fact {
+    margin-top: 10px;
+    background: #fff8e1;
+    border: 1px dashed var(--sun);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    text-align: left;
+    line-height: 1.4;
+  }
 
   /* ---------- Glossary flip cards ---------- */
   .glossary-grid {
@@ -723,6 +734,8 @@
   <a href="#subcontinent">🌏 Subcontinent</a>
   <a href="#parks">🏞️ Parks</a>
   <a href="#factfile">🐯 Factfile</a>
+  <a href="#wildlife-conservation">🦏 Wildlife Conservation</a>
+  <a href="#recap">📝 Recap</a>
   <a href="#glossary">📖 Glossary</a>
   <a href="#quiz">🎯 Quiz</a>
 </nav>
@@ -911,6 +924,69 @@
     <div class="panel">
       <p class="lead">Here is a list of selected animals that you have already learnt about in class.</p>
       <div class="factfile-grid" id="factfile-grid"></div>
+
+      <div class="callout didyouknow" style="margin-top:22px;">
+        <span class="tag-emoji">☠️</span>
+        <h3>Toxin, Poison or Venom?</h3>
+        <p><strong>A toxin</strong> is any substance that can cause harm.<br>
+        <strong>A poison</strong> is a toxin that causes its effect through ingestion or absorption — it could be anything in excess, be it food, water, etc.<br>
+        <strong>A venom</strong> is a toxin that causes its effect through contact with the blood stream. Its administration is via a specialized introductory/delivery system — it is a liquid substance that needs to be injected or get in touch with the bloodstream in order to cause serious discomfort, and can eventually be fatal (lead to death).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WILDLIFE CONSERVATION -->
+  <section id="wildlife-conservation">
+    <div class="section-head">
+      <div class="icon-badge">🦏</div>
+      <h2><span class="eyebrow">Protect</span>Need for Conservation</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Due to habitat destruction and various other reasons, our diverse wildlife is under constant threat. Some of them are on the verge of extinction — i.e. they are becoming <strong>extinct</strong> — and many others are <strong>endangered</strong>, i.e. they are under threat of existence but with conservation can be saved, as compared to the ones that are severely endangered.</p>
+
+      <h3 style="color:var(--leaf-dark); margin:20px 0 10px;">🎯 Poached for Their Body Parts</h3>
+      <p class="group-note" style="margin-bottom:10px;">Certain wild animals are poached/hunted for:</p>
+      <div class="resource-grid" id="poach-grid"></div>
+
+      <div class="callout didyouknow" style="margin-top:18px;">
+        <span class="tag-emoji">💡</span>
+        <h3>Did You Know?</h3>
+        <p>The tusks of elephants are actually their <strong>incisors</strong>.</p>
+      </div>
+
+      <h3 style="color:var(--leaf-dark); margin:26px 0 6px;">🏘️ Loss of Habitat &amp; Man–Animal Conflict</h3>
+      <div class="cause-effect" id="man-animal-conflict"></div>
+
+      <div class="callout vanmahotsav" style="margin-top:20px;">
+        <span class="tag-emoji">🏞️</span>
+        <h3>Protected Areas</h3>
+        <p>Hence, the government has declared several areas as protected areas — called <strong>National Parks</strong> and <strong>Wildlife Sanctuaries</strong>. Having learnt about the forests and wildlife in our country, we must understand that with its beauty and benefits comes the responsibility to conserve it for our future generations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECAP -->
+  <section id="recap">
+    <div class="section-head">
+      <div class="icon-badge">📝</div>
+      <h2><span class="eyebrow">Wrap up</span>Chapter Recap</h2>
+    </div>
+    <div class="panel">
+      <h3 style="color:var(--leaf-dark); margin:0 0 10px;">🌟 Let's Recall</h3>
+      <ul class="summary-list">
+        <li><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. They are called the <strong>natural habitat</strong> of the animals.</li>
+        <li>Our forests can be divided into <strong>five main groups</strong> — Evergreen forests, Deciduous forests, Thorn forests, Mountain or Coniferous forests, and Marshy or tidal forests.</li>
+        <li>The wildlife found in the countries forming the <strong>Sub-continent</strong> (namely India, Pakistan, Bangladesh, Nepal, Bhutan, and the island countries of Sri Lanka and Maldives) are very similar.</li>
+        <li><strong>Loss of habitat</strong> is the prime reason for the decrease in the number of wild animals. Hence, the government has declared several areas as protected areas — <strong>National Parks</strong> and <strong>Wildlife Sanctuaries</strong>.</li>
+      </ul>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 10px;">🌱 Now You Know...</h3>
+      <ul class="summary-list">
+        <li>Earth's natural resources are very important for the survival of all living beings. Forests are a <strong>renewable but exhaustible</strong> natural resource.</li>
+        <li>If forests are used up and not replaced for a long period of time, the forest cover will disappear.</li>
+        <li>Forests are one of the most valuable natural resources, which have taken millions of years to grow. But these resources are being used faster than they can be replenished by nature.</li>
+        <li>Man should make <strong>judicious (wise) use</strong> of natural resources.</li>
+      </ul>
     </div>
   </section>
 
@@ -935,7 +1011,7 @@
     <div class="panel" id="quiz-panel"></div>
   </section>
 
-  <div class="more-coming">🚧 More animals for the Wildlife Factfile are coming soon — check back for updates! 🚧</div>
+  <div class="more-coming">🎉 That's the whole chapter, Dishika — great job making it to the end! Head to the Quiz to test yourself. 🎉</div>
 
   <footer>Made with 🌿 for Dishika's Social Studies revision · Unit 2: Forests and Wildlife</footer>
 </main>
@@ -1083,15 +1159,82 @@
       emoji: "🐯",
       features: "The Royal Bengal Tiger is the largest member of the cat family. It is the national animal of India and a powerful predator.",
       habitat: "You find them in dense jungles with thick grasslands and undergrowth in which they can camouflage and stalk or wait for their prey.",
-      food: "Carnivorous"
+      food: "Carnivorous",
+      diet: "carnivorous"
     },
     {
       name: "BlackBuck Antelope (Kala Hiran)",
       emoji: "🦌",
       features: "It has ringed horns. It is one of the fastest running animals on earth.",
       habitat: "Lives in open plains in herds where it can move fast.",
-      food: "Herbivorous"
+      food: "Herbivorous",
+      diet: "herbivorous"
+    },
+    {
+      name: "The Asiatic Elephant",
+      emoji: "🐘",
+      features: "The Asiatic Elephant is the largest mammal in India, but it is smaller compared to the African Elephant.",
+      habitat: "Found across the whole of the country.",
+      food: "Herbivorous",
+      diet: "herbivorous"
+    },
+    {
+      name: "The Asiatic Lion",
+      emoji: "🦁",
+      features: "It has a majestic mane and a big tail tuft. The lionesses are the ones who mostly go hunting and they generally hunt in pride. The male lion spends most of the day sleeping — on average, 20 hours a day. It eats animals like Sambar, Chital, Nilgai, Wild Boar (pig), and occasionally goats and camels.",
+      habitat: "Gir Wildlife Sanctuary is the only remaining refuge for this majestic animal.",
+      food: "Carnivorous",
+      diet: "carnivorous"
+    },
+    {
+      name: "Sarus Crane",
+      emoji: "🦢",
+      features: "These birds are usually seen in small groups of 2-5 and they forage (look for food) while walking in shallow water or in fields, sometimes pecking with their long beaks. Unlike many cranes which make long migrations, the Sarus Cranes do not. On average the male is larger than the female; males can attain a maximum height of approximately 6.6 ft, with a wingspan measured up to 8.5 ft from tip to tip. The average weight is 7.3 kg.",
+      habitat: "Found in northern and central India.",
+      food: "Omnivorous",
+      diet: "omnivorous",
+      funFact: "💡 Did you know? Sarus Cranes are the world's tallest living flying bird."
+    },
+    {
+      name: "Leopard",
+      emoji: "🐆",
+      features: "They are one of the members in the cat family. They are graceful and stealthy, accomplished stalkers, agile climbers. Have sharp eyesight and hearing.",
+      habitat: "They can be found in densely forested areas including National Parks and Wildlife sanctuaries.",
+      food: "Carnivorous",
+      diet: "carnivorous"
+    },
+    {
+      name: "Indian Spectacled Cobra",
+      emoji: "🐍",
+      features: "It is a *venomous snake that can spit venom to a distance of 2 meters. If this venom enters the eyes of any human beings/animals, it can cause severe pain and permanent loss of eyesight.",
+      habitat: "Rain forests, rice fields and cultivated land.",
+      food: "Carnivorous — swallows its food whole",
+      diet: "carnivorous"
+    },
+    {
+      name: "Asiatic One-Horned Rhinoceros",
+      emoji: "🦏",
+      features: "The one horned rhinoceros is found only in India and weighs around 2000 kg.",
+      habitat: "Marshy and swampy areas of north-eastern India.",
+      food: "Herbivorous",
+      diet: "herbivorous",
+      funFact: "💡 Did you know? Rhinos found in Asia have just one horn — those found in Africa have two horns."
+    },
+    {
+      name: "Peacock",
+      emoji: "🦚",
+      features: "It is the national bird of India. The male bird is brightly coloured with a magnificent tail of feathers.",
+      habitat: "Open forests and its undergrowth. It also prefers stream-side forests, Deciduous forests and other cultivated areas.",
+      food: "Eats grains, insects, small mammals, reptiles, small figs and some cultivated crops",
+      diet: "omnivorous"
     }
+  ];
+
+  var poachedFor = [
+    { emoji: "🐅", name: "Skin", desc: "Poached from tigers — a chief source of income." },
+    { emoji: "🦏", name: "Horns", desc: "Poached from rhinoceroses." },
+    { emoji: "🐘", name: "Tusks", desc: "Poached from elephants — to make ivory products." },
+    { emoji: "🐐", name: "Hide (Hair)", desc: "Poached from the Tibetan Antelope (Chiru) to make shahtoosh shawls." }
   ];
 
   var glossary = [
@@ -1110,7 +1253,11 @@
     { term: "Continent", def: "One of several large landmasses on Earth. There are seven regions commonly regarded as continents." },
     { term: "Indian Subcontinent", def: "India, Pakistan, Bangladesh, Nepal, Bhutan, and the island countries of Sri Lanka and Maldives — once part of the huge Asian continent." },
     { term: "National Park", def: "A protected area to conserve the natural environment and wildlife, and also provide recreation. Hunting is not allowed." },
-    { term: "Wildlife Sanctuary", def: "A protected area, usually in natural condition, managed to provide and maintain the habitat of wild animals. Hunting is not allowed." }
+    { term: "Wildlife Sanctuary", def: "A protected area, usually in natural condition, managed to provide and maintain the habitat of wild animals. Hunting is not allowed." },
+    { term: "Toxin", def: "Any substance that can cause harm." },
+    { term: "Poison", def: "A toxin that causes its effect through ingestion or absorption — it could be anything in excess, be it food, water, etc." },
+    { term: "Venom", def: "A toxin that causes its effect through contact with the blood stream, via a specialized delivery system — it needs to be injected or get in touch with the bloodstream." },
+    { term: "Man–Animal Conflict", def: "When wild animals, forced out of shrinking forests in search of food, damage crops or attack livestock, and farmers kill the animals to protect their livestock." }
   ];
 
   var quizData = [
@@ -1144,7 +1291,22 @@
     { q: "Which animal is the national animal of India and the largest member of the cat family?", options: ["Asiatic Lion", "Blackbuck Antelope", "Royal Bengal Tiger", "Leopard"], answer: 2 },
     { q: "The Royal Bengal Tiger is found in dense jungles with thick grasslands where it can:", options: ["Fly to catch birds", "Camouflage and stalk its prey", "Live underwater", "Build nests in trees"], answer: 1 },
     { q: "What is the Blackbuck Antelope (Kala Hiran) known for?", options: ["Its long trunk", "Its ringed horns and speed", "Living underwater", "Its feathers"], answer: 1 },
-    { q: "What is the food habit of the Blackbuck Antelope?", options: ["Carnivorous", "Herbivorous", "Omnivorous", "It doesn't eat"], answer: 1 }
+    { q: "What is the food habit of the Blackbuck Antelope?", options: ["Carnivorous", "Herbivorous", "Omnivorous", "It doesn't eat"], answer: 1 },
+    { q: "The Asiatic Elephant is the largest mammal in India, but is smaller compared to which other elephant?", options: ["The African Elephant", "The Woolly Mammoth", "The Dwarf Elephant", "There is no other kind"], answer: 0 },
+    { q: "Which wildlife sanctuary is the only remaining refuge for the Asiatic Lion?", options: ["Corbett National Park", "Kaziranga National Park", "Gir Wildlife Sanctuary", "Ranthambore National Park"], answer: 2 },
+    { q: "Which bird is known as the world's tallest living flying bird?", options: ["Peacock", "Sarus Crane", "Flamingo", "Himalayan Griffon"], answer: 1 },
+    { q: "What is the food habit of the Sarus Crane?", options: ["Carnivorous", "Herbivorous", "Omnivorous", "It doesn't eat"], answer: 2 },
+    { q: "Which big cat is described as graceful and stealthy, an accomplished stalker and agile climber with sharp eyesight and hearing?", options: ["Asiatic Lion", "Royal Bengal Tiger", "Leopard", "Blackbuck"], answer: 2 },
+    { q: "How far can the Indian Spectacled Cobra spit its venom?", options: ["Half a meter", "2 meters", "10 meters", "It cannot spit venom"], answer: 1 },
+    { q: "What is a toxin that causes its effect through contact with the blood stream called?", options: ["A poison", "A venom", "A vitamin", "A vaccine"], answer: 1 },
+    { q: "What is a toxin that causes its effect through ingestion or absorption called?", options: ["A poison", "A venom", "A hormone", "An antibiotic"], answer: 0 },
+    { q: "The one-horned rhinoceros, found only in India, weighs around how much?", options: ["200 kg", "2000 kg", "20 kg", "20,000 kg"], answer: 1 },
+    { q: "Rhinos found in Asia usually have how many horns, compared to those found in Africa?", options: ["One horn in Asia, two in Africa", "Two horns in Asia, one in Africa", "No horns in either", "Three horns in both"], answer: 0 },
+    { q: "Which bird is the national bird of India, known for its brightly coloured tail of feathers?", options: ["Sarus Crane", "Peacock", "Flamingo", "Himalayan Griffon"], answer: 1 },
+    { q: "The tusks of elephants are actually their:", options: ["Ribs", "Incisors", "Whiskers", "Claws"], answer: 1 },
+    { q: "Wild animals like the tiger, rhinoceros and elephant are poached mainly for their:", options: ["Body parts, like skin, horns and tusks", "Ability to sing", "Colourful feathers", "Speed"], answer: 0 },
+    { q: "What is the prime reason for the decrease in the number of wild animals?", options: ["Too much rainfall", "Loss of habitat", "Too many national parks", "Cold weather"], answer: 1 },
+    { q: "When wild animals come out of shrinking forests and eat crops or livestock, and farmers kill them to protect their livestock, what is this called?", options: ["Man-animal conflict", "Deforestation", "Photosynthesis", "Migration"], answer: 0 }
   ];
 
   // ---------------- FOREST TYPE EXPLORER ----------------
@@ -1293,8 +1455,34 @@
       '<h3>' + a.name + '</h3>' +
       '<div class="ff-row"><strong>Striking features:</strong> ' + a.features + '</div>' +
       '<div class="ff-row"><strong>Habitat:</strong> ' + a.habitat + '</div>' +
-      '<span class="ff-diet ' + a.food.toLowerCase() + '">' + a.food + '</span>';
+      '<div class="ff-row"><strong>Food Habit:</strong> ' + a.food + '</div>' +
+      '<span class="ff-diet ' + a.diet + '">' + a.diet.charAt(0).toUpperCase() + a.diet.slice(1) + '</span>' +
+      (a.funFact ? '<div class="ff-fact">' + a.funFact + '</div>' : '');
     factfileGrid.appendChild(card);
+  });
+
+  // ---------------- POACHED FOR ----------------
+  var poachGrid = document.getElementById("poach-grid");
+  poachedFor.forEach(function (p) {
+    var div = document.createElement('div');
+    div.className = 'resource-card';
+    div.innerHTML = '<div class="emoji">' + p.emoji + '</div><h4>' + p.name + '</h4><p>' + p.desc + '</p>';
+    poachGrid.appendChild(div);
+  });
+
+  // ---------------- MAN-ANIMAL CONFLICT ----------------
+  var conflictSteps = [
+    { step: "Step 1", text: "Forested areas are being cleared every year for building human settlements, agriculture, etc." },
+    { step: "Step 2", text: "Wild animals do not have enough space to live and find food." },
+    { step: "Step 3", text: "They sometimes come out of the forest in search of food and eat the crops or the livestock, causing damage to farmers." },
+    { step: "Step 4", text: "This leads to an increase in man-animal conflict, where the farmers tend to kill these wild animals to protect their livestock." }
+  ];
+  var conflictGrid = document.getElementById("man-animal-conflict");
+  conflictSteps.forEach(function (c) {
+    var div = document.createElement('div');
+    div.className = 'ce-card';
+    div.innerHTML = '<div class="step">' + c.step + '</div><p>' + c.text + '</p>';
+    conflictGrid.appendChild(div);
   });
 
   // ---------------- GLOSSARY ----------------
