@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forests and Wildlife — Dishika's Study Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --leaf: #3f9142;
+    --leaf-dark: #276b2b;
+    --leaf-light: #7fd48a;
+    --bark: #8a5a34;
+    --sun: #ffcf3f;
+    --sky: #4d96ff;
+    --berry: #ff6fa5;
+    --river: #2ec4b6;
+    --soil: #c99a5b;
+    --paper: #fffdf6;
+    --ink: #2a3b2c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Fredoka', sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, #eafaec 0%, #f5fbee 40%, #fff9ec 100%);
+    padding-bottom: 60px;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: linear-gradient(-45deg, var(--leaf-dark), var(--leaf), #56b25c, var(--river));
+    background-size: 300% 300%;
+    animation: gradientShift 16s ease infinite;
+    color: #fff;
+    padding: 38px 20px 70px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .hero .unit-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.22);
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 7vw, 3.2rem);
+    margin: 6px 0 8px;
+    text-shadow: 0 4px 0 rgba(0,0,0,0.12);
+  }
+  .hero p.tagline {
+    font-size: 1.05rem;
+    font-weight: 600;
+    opacity: 0.95;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .hero .emoji-row {
+    font-size: 2.1rem;
+    margin-top: 16px;
+    letter-spacing: 10px;
+  }
+
+  /* ---------- Sticky nav ---------- */
+  nav.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,253,246,0.95);
+    backdrop-filter: blur(6px);
+    border-bottom: 3px solid var(--leaf-light);
+    padding: 10px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: -30px;
+  }
+  nav.tabs a {
+    text-decoration: none;
+    color: var(--leaf-dark);
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 7px 13px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  nav.tabs a:hover, nav.tabs a.active {
+    background: var(--leaf);
+    color: #fff;
+    border-color: var(--leaf);
+    transform: translateY(-2px);
+  }
+
+  main {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  section {
+    margin-top: 46px;
+    scroll-margin-top: 70px;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .section-head .icon-badge {
+    font-size: 1.8rem;
+    background: #fff;
+    border: 3px solid var(--leaf-light);
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.06);
+  }
+  .section-head h2 {
+    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    color: var(--leaf-dark);
+    margin: 0;
+  }
+  .section-head .eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--river);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .panel {
+    background: var(--paper);
+    border: 3px solid #fff;
+    border-radius: 26px;
+    box-shadow: 0 14px 30px rgba(40,80,40,0.1);
+    padding: 22px 22px 26px;
+  }
+
+  .lead {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    margin: 0 0 10px;
+  }
+
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .fact-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 16px;
+    border: 2px solid var(--leaf-light);
+    box-shadow: 0 6px 0 rgba(63,145,66,0.12);
+  }
+  .fact-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    color: var(--leaf-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fact-card p { margin: 0; font-size: 0.92rem; line-height: 1.5; }
+
+  /* ---------- Forest type explorer ---------- */
+  .forest-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .forest-tab-btn {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 14px;
+    cursor: pointer;
+    color: #fff;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+    transition: transform 0.15s ease;
+    flex: 1 1 150px;
+  }
+  .forest-tab-btn:hover { transform: translateY(-2px); }
+  .forest-tab-btn.active { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+  .forest-detail {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    border: 3px solid var(--leaf-light);
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+  .forest-detail h3 {
+    margin: 0 0 4px;
+    font-size: 1.3rem;
+  }
+  .forest-detail .where-tag {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--sky);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .forest-detail ul { margin: 8px 0; padding-left: 22px; }
+  .forest-detail li { margin-bottom: 5px; line-height: 1.5; }
+  .tree-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tree-chip {
+    background: var(--leaf-light);
+    color: var(--leaf-dark);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+
+  /* ---------- Table ---------- */
+  .table-wrap { overflow-x: auto; margin-top: 10px; }
+  table.forest-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    min-width: 560px;
+  }
+  table.forest-table th {
+    background: var(--leaf);
+    color: #fff;
+    font-family: 'Baloo 2', cursive;
+    padding: 10px;
+    text-align: left;
+    position: sticky;
+    top: 0;
+  }
+  table.forest-table td {
+    padding: 10px;
+    border-bottom: 1px solid #e3efe0;
+    vertical-align: top;
+  }
+  table.forest-table tr:nth-child(even) td { background: #f4faf2; }
+
+  /* ---------- Layers diagram ---------- */
+  .layer-diagram {
+    display: flex;
+    flex-direction: column;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 3px solid var(--leaf-light);
+  }
+  .layer {
+    padding: 16px 18px;
+    cursor: pointer;
+    color: #fff;
+    position: relative;
+    transition: flex-grow 0.25s ease, padding 0.25s ease;
+    font-family: 'Baloo 2', cursive;
+  }
+  .layer .layer-title { font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+  .layer .layer-detail {
+    display: none;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    font-size: 0.88rem;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    padding: 8px 12px;
+    line-height: 1.5;
+  }
+  .layer.open .layer-detail { display: block; }
+  .layer.canopy { background: linear-gradient(90deg, #2f7d33, #3f9142); }
+  .layer.understorey { background: linear-gradient(90deg, #4a9e4e, #5cb861); }
+  .layer.floor { background: linear-gradient(90deg, #6fbf73, #8fd193); color: #1e3320; }
+  .layer.underground { background: linear-gradient(90deg, var(--soil), #a97b3f); }
+
+  /* ---------- Resource chips ---------- */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .resource-card {
+    background: linear-gradient(160deg, #fff, #f2f9f1);
+    border: 2px dashed var(--leaf-light);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+  }
+  .resource-card .emoji { font-size: 1.8rem; }
+  .resource-card h4 { margin: 6px 0 4px; font-size: 0.95rem; font-family: 'Baloo 2', cursive; color: var(--leaf-dark); }
+  .resource-card p { margin: 0; font-size: 0.8rem; line-height: 1.4; }
+
+  /* ---------- Why conserve cause-effect ---------- */
+  .cause-effect {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .ce-card {
+    background: #fff;
+    border-radius: 16px;
+    border-left: 6px solid var(--river);
+    padding: 14px 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+  }
+  .ce-card .step {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--river);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .ce-card p { margin: 4px 0 0; font-size: 0.9rem; line-height: 1.5; }
+
+  /* ---------- Threats accordion ---------- */
+  .accordion-item {
+    border: 2px solid #ffd7b0;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .accordion-header {
+    background: linear-gradient(90deg, #ffb347, #ff8c69);
+    color: #fff;
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+  }
+  .accordion-header .arrow { transition: transform 0.2s ease; }
+  .accordion-item.open .arrow { transform: rotate(180deg); }
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  .accordion-body-inner { padding: 12px 16px; }
+  .accordion-item.open .accordion-body { max-height: 300px; }
+
+  .stat-banner {
+    margin-top: 18px;
+    background: linear-gradient(120deg, #2a3b2c, #1c4d29);
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-banner .big-num {
+    font-family: 'Baloo 2', cursive;
+    font-size: clamp(2rem, 8vw, 3rem);
+    color: var(--sun);
+  }
+  .stat-banner p { margin: 4px 0 0; font-size: 0.9rem; }
+
+  /* ---------- Highlight callouts ---------- */
+  .callout {
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 16px;
+    position: relative;
+  }
+  .callout.chipko {
+    background: linear-gradient(135deg, #fff0e6, #ffe3d1);
+    border: 2px solid #ffb37a;
+  }
+  .callout.vanmahotsav {
+    background: linear-gradient(135deg, #eafaec, #d7f5db);
+    border: 2px solid var(--leaf-light);
+  }
+  .callout h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--leaf-dark); }
+  .callout p { margin: 0; font-size: 0.92rem; line-height: 1.6; }
+  .callout .tag-emoji { font-size: 1.6rem; margin-bottom: 6px; display: inline-block; }
+
+  /* ---------- Glossary flip cards ---------- */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .flip-card {
+    perspective: 1000px;
+    height: 140px;
+    cursor: pointer;
+  }
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Baloo 2', cursive;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+  }
+  .flip-front {
+    background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .flip-back {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    color: var(--ink);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.4;
+    transform: rotateY(180deg);
+  }
+  .flip-hint { font-size: 0.68rem; color: #eafbe8; margin-top: 4px; font-family: 'Fredoka', sans-serif; font-weight: 600; }
+
+  /* ---------- Now you know ---------- */
+  .summary-list { margin: 0; padding-left: 22px; }
+  .summary-list li { margin-bottom: 10px; line-height: 1.6; font-size: 0.95rem; }
+  .summary-list li strong { color: var(--leaf-dark); }
+
+  /* ---------- Quiz ---------- */
+  #quiz-panel { position: relative; }
+  .quiz-progress {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    color: var(--leaf-dark);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  .quiz-question {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-family: 'Baloo 2', cursive;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .quiz-options { display: grid; gap: 10px; }
+  .quiz-opt {
+    text-align: left;
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .quiz-opt:hover { background: #f0f9ee; }
+  .quiz-opt.correct { background: #d7f5db; border-color: var(--leaf); }
+  .quiz-opt.wrong { background: #ffe0e0; border-color: var(--berry); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback { margin-top: 12px; font-weight: 700; font-family: 'Baloo 2', cursive; min-height: 24px; }
+  .quiz-nav { margin-top: 16px; display: flex; gap: 10px; justify-content: flex-end; }
+  .quiz-btn {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(135deg, var(--sky), #6bb0ff);
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+  }
+  .quiz-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .quiz-result {
+    text-align: center;
+    padding: 20px;
+  }
+  .quiz-result .score-num {
+    font-family: 'Baloo 2', cursive;
+    font-size: 2.6rem;
+    color: var(--leaf-dark);
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 50px;
+    color: #6b8c6f;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .more-coming {
+    text-align: center;
+    margin-top: 40px;
+    background: #fff7e0;
+    border: 2px dashed var(--sun);
+    border-radius: 18px;
+    padding: 16px;
+    font-weight: 600;
+    color: #8a6d00;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="unit-tag">UNIT 2 · SOCIAL STUDIES</span>
+  <h1>🌳 Forests and Wildlife</h1>
+  <p class="tagline">Dishika's interactive explorer — tap, flip and quiz your way through India's forests!</p>
+  <div class="emoji-row">🌲🦜🐒🌿🐾</div>
+</header>
+
+<nav class="tabs" id="tabnav">
+  <a href="#intro">🌱 Intro</a>
+  <a href="#types">🌳 Forest Types</a>
+  <a href="#where">🗺️ Where</a>
+  <a href="#role">🐿️ Role &amp; Uses</a>
+  <a href="#conserve">🛡️ Conserve</a>
+  <a href="#glossary">📖 Glossary</a>
+  <a href="#quiz">🎯 Quiz</a>
+</nav>
+
+<main>
+
+  <!-- INTRO -->
+  <section id="intro">
+    <div class="section-head">
+      <div class="icon-badge">🌱</div>
+      <h2><span class="eyebrow">Getting started</span>What is a Forest?</h2>
+    </div>
+    <div class="panel">
+      <p class="lead"><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. The kind of trees and plants that grow in a forest depend on the <strong>climate</strong> and <strong>soil</strong> of the place.</p>
+      <div class="fact-grid">
+        <div class="fact-card">
+          <h3>🌿 Natural Vegetation</h3>
+          <p>Forests grow naturally in a region — that's why they are called <strong>natural vegetation</strong>.</p>
+        </div>
+        <div class="fact-card">
+          <h3>🏡 Natural Habitat</h3>
+          <p>Forests provide shelter to many wild animals — that's why they are called the <strong>natural habitat of the animals</strong>.</p>
+        </div>
+      </div>
+      <p class="lead" style="margin-top:16px;">India has a great diversity of natural ecosystems, and our forests can be divided into <strong>five main groups</strong>. Explore each one below!</p>
+    </div>
+  </section>
+
+  <!-- FOREST TYPES -->
+  <section id="types">
+    <div class="section-head">
+      <div class="icon-badge">🌳</div>
+      <h2><span class="eyebrow">Explore</span>Types of Forests in India</h2>
+    </div>
+    <div class="panel">
+      <div class="forest-tabs" id="forest-tabs"></div>
+      <div class="forest-detail" id="forest-detail"></div>
+    </div>
+  </section>
+
+  <!-- WHERE -->
+  <section id="where">
+    <div class="section-head">
+      <div class="icon-badge">🗺️</div>
+      <h2><span class="eyebrow">Locate</span>Where Do Forests Grow in India?</h2>
+    </div>
+    <div class="panel">
+      <div class="table-wrap">
+        <table class="forest-table">
+          <thead>
+            <tr><th>Name of Forest</th><th>Places Found</th><th>States / Union Territories</th><th>Examples of Plants/Trees</th></tr>
+          </thead>
+          <tbody id="forest-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLE AND USES -->
+  <section id="role">
+    <div class="section-head">
+      <div class="icon-badge">🐿️</div>
+      <h2><span class="eyebrow">Discover</span>Role &amp; Uses of Forests</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Like soil and minerals, forests are also an important <strong>natural resource</strong>. They provide natural habitat — food, water and shelter — to a large number of living things.</p>
+
+      <h3 style="color:var(--leaf-dark); margin-bottom:6px;">🏢 Tap a layer of the forest</h3>
+      <p style="font-size:0.85rem; margin-top:0; color:#5a6e5c;">Every layer of the forest is home to different animals.</p>
+      <div class="layer-diagram" id="layer-diagram"></div>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 6px;">🍽️ Every Part of a Tree is Food for Someone</h3>
+      <p class="lead">Birds eat fruits and seeds, deer eat leaves, squirrels eat nuts, some insects eat roots, some drink sap, and many animals eat green leaves. Some forest animals also feed upon other smaller and weaker animals.</p>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 6px;">🧑‍🤝‍🧑 Homes for Tribal Communities</h3>
+      <p class="lead">Many tribal communities have been living in forests since ancient times. They depend on the forests for food, shelter and medicines.</p>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 10px;">🪵 Useful Resources from Forests</h3>
+      <div class="resource-grid" id="resource-grid"></div>
+      <p style="font-size:0.8rem; color:#5a6e5c; margin-top:12px;">*Rubber is also grown as a plantation crop.</p>
+    </div>
+  </section>
+
+  <!-- CONSERVE -->
+  <section id="conserve">
+    <div class="section-head">
+      <div class="icon-badge">🛡️</div>
+      <h2><span class="eyebrow">Protect</span>Why We Need to Conserve Forests</h2>
+    </div>
+    <div class="panel">
+      <div class="cause-effect" id="cause-effect"></div>
+
+      <h3 style="color:var(--e8590c); color:#c1440e; margin:26px 0 6px;">⚠️ Threats to Our Forests — tap to open</h3>
+      <div id="threats-accordion"></div>
+
+      <div class="stat-banner">
+        <div class="big-num">24.62%</div>
+        <p>A recent study by the Forest Survey of India states that forests cover only 24.62 percent of the land area in India.</p>
+      </div>
+
+      <div class="callout chipko">
+        <span class="tag-emoji">🤗</span>
+        <h3>The Chipko Movement</h3>
+        <p>The word <strong>'Chipko'</strong>, literally in Hindi, means "to hug." It was a movement of the peasants in the <strong>Uttarakhand</strong> region of India to prevent the felling of trees by wood contractors. It was strengthened by <strong>Sunder Lal Bahuguna</strong>, and the movement spread to other parts of the Himalayas.</p>
+      </div>
+
+      <div class="callout vanmahotsav">
+        <span class="tag-emoji">🌳</span>
+        <h3>Van Mahotsav — Conservation of Our Forest Wealth</h3>
+        <p>A festival called <strong>Van Mahotsav</strong> is celebrated every year throughout India in the <strong>first week of July</strong> to encourage people to plant trees and get involved with conservation and protection of nature. Each one of us must take this opportunity to restore the greenery in our surroundings, instead of cutting it down.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section id="glossary">
+    <div class="section-head">
+      <div class="icon-badge">📖</div>
+      <h2><span class="eyebrow">Tap to flip</span>Word Bank / Glossary</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Tap a card to reveal its meaning!</p>
+      <div class="glossary-grid" id="glossary-grid"></div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz">
+    <div class="section-head">
+      <div class="icon-badge">🎯</div>
+      <h2><span class="eyebrow">Test yourself</span>Forest Quiz</h2>
+    </div>
+    <div class="panel" id="quiz-panel"></div>
+  </section>
+
+  <div class="more-coming">🚧 More topics from this chapter (like Wildlife) are coming soon — check back for updates! 🚧</div>
+
+  <footer>Made with 🌿 for Dishika's Social Studies revision · Unit 2: Forests and Wildlife</footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------- DATA ----------------
+  var forestTypes = [
+    {
+      key: "evergreen",
+      name: "Evergreen Forests",
+      emoji: "🌴",
+      color: "linear-gradient(135deg,#2f9e44,#40c057)",
+      facts: [
+        "Found in areas which receive heavy rainfall.",
+        "Trees in these forests remain green throughout the year.",
+        "New leaves grow before the old ones are shed."
+      ],
+      trees: ["Rosewood", "Ebony", "Mango", "Neem", "Mahogany"],
+      where: "Western Ghats and north-eastern states like Assam, Arunachal Pradesh, Meghalaya and Tripura"
+    },
+    {
+      key: "deciduous",
+      name: "Deciduous Forests",
+      emoji: "🍂",
+      color: "linear-gradient(135deg,#e8590c,#f08c00)",
+      facts: [
+        "Trees of these forests shed their leaves — that's why they are also called monsoon forests.",
+        "They are found in warmer areas of the Southern Plateau (Andhra Pradesh) and in the foothills of the Himalayas.",
+        "Also found in Bihar and Odisha."
+      ],
+      trees: ["Teak", "Sal", "Sheesham"],
+      where: "Southern Plateau, foothills of the Himalayas, Bihar and Odisha"
+    },
+    {
+      key: "thorn",
+      name: "Thorn Forests",
+      emoji: "🌵",
+      color: "linear-gradient(135deg,#d9480f,#f76707)",
+      facts: [
+        "Found in areas with very little rainfall.",
+        "Trees and shrubs are short and thorny."
+      ],
+      trees: ["Keekar", "Babool", "Date palms", "Thorny shrubs"],
+      where: "Rajasthan and some parts of the Deccan Plateau (parts of Madhya Pradesh and Uttar Pradesh)"
+    },
+    {
+      key: "coniferous",
+      name: "Mountain / Coniferous Forests",
+      emoji: "🌲",
+      color: "linear-gradient(135deg,#1971c2,#4dabf7)",
+      facts: [
+        "Found in places that are cold most of the time.",
+        "Trees mostly have tall and cone-shaped trunks with needle-shaped leaves.",
+        "Found mostly in the Himalayan region."
+      ],
+      trees: ["Fir", "Pine", "Cedar (Deodar)", "Oak"],
+      where: "Himalayan region, Jammu and Kashmir"
+    },
+    {
+      key: "marshy",
+      name: "Marshy / Tidal Forests",
+      emoji: "🌊",
+      color: "linear-gradient(135deg,#0c8599,#22b8cf)",
+      facts: [
+        "Found in the deltas of rivers such as the Ganga, Mahanadi and Godavari.",
+        "The Ganga delta marshy forests are known as the Sundarbans.",
+        "Mangrove trees grow in these forests after the sundri trees that grow there.",
+        "Mangrove trees have breathing roots which help them survive in the clayey soil of this region."
+      ],
+      trees: ["Mangroves (Sundri)"],
+      where: "West Bengal, Andhra Pradesh and Odisha"
+    }
+  ];
+
+  var layers = [
+    { key: "canopy", title: "🌳 Canopy (Leafy Treetops)", detail: "Some birds and insects live high up in the leafy treetops, called the canopy, sheltering a large number of living things." },
+    { key: "understorey", title: "🐆 Understorey (Middle Layer)", detail: "Climbers live lower down. This middle layer is called the understorey. Panther and other wild cats, like the leopard, are excellent tree climbers and live here." },
+    { key: "floor", title: "🦌 Forest Floor", detail: "Some animals live on the forest floor — like deer, frogs, snakes, etc." },
+    { key: "underground", title: "🐭 Underground", detail: "Others live underground, like mice, mongoose, etc." }
+  ];
+
+  var resources = [
+    { emoji: "🪵", name: "Timber", desc: "Used for building houses and furniture." },
+    { emoji: "🔥", name: "Firewood", desc: "Used by villagers as fuel for cooking." },
+    { emoji: "📄", name: "Wood Pulp", desc: "Used to make paper." },
+    { emoji: "🎨", name: "Rubber, Gum, Cork, Resins", desc: "Used to make paint and many medicinal products." },
+    { emoji: "🌾", name: "Food Crops", desc: "Obtained from plants like tulsi and trees like neem." },
+    { emoji: "🍌", name: "Fruits", desc: "Banana, mango, lemons, pineapples, oranges, tomatoes and more originated as wild plants in forests." },
+    { emoji: "🌽", name: "Grains & Vegetables", desc: "Wheat, rice, coconut, coffee, maize, potato, etc." }
+  ];
+
+  var causeEffect = [
+    { step: "Step 1", text: "Trees release oxygen into the air during photosynthesis." },
+    { step: "Step 2", text: "Trees cause rainfall by cooling the air and releasing water vapour into it through transpiration." },
+    { step: "Step 3", text: "Forests help hold soil particles firmly, so soil can absorb rain water — this increases the level of the water table below." },
+    { step: "Step 4", text: "If forests are not present, soil gets eroded by running water and cannot percolate into the ground. Forests prevent soil erosion and control floods." }
+  ];
+
+  var threats = [
+    { title: "🏘️ Clearing for Agriculture & Settlement", body: "Due to the increasing population, many forests are being cleared for agriculture and human settlement. Cutting trees to clear forests is called deforestation. This increases the chances of landslides and floods due to soil erosion." },
+    { title: "🐘 Loss of Animal Habitat", body: "Deforestation leads to a reduction in animal population because their natural habitat is reduced. If there aren't enough forests, there won't be enough food for the animals, so they come out in search of food and are forced to kill livestock. Humans, in turn, kill them to protect their domestic animals. Many animals are becoming extinct (wiped out) and many more are endangered." },
+    { title: "🐄 Overgrazing", body: "Due to the lack of availability of fodder for cattle, rural people use forest areas as grazing grounds. These animals destroy small plants by eating them, preventing them from growing into big trees." },
+    { title: "🔥 Forest Fires", body: "Sometimes people leave burning cigarettes and open fires in the forests. The dry twigs and branches immediately catch fire, and it spreads and engulfs the entire forest — destroying many trees, plants and killing many animals and birds." }
+  ];
+
+  var glossary = [
+    { term: "Natural Vegetation", def: "Plants that grow naturally in a region, without being planted by people." },
+    { term: "Natural Habitat", def: "The natural home of an animal — forests shelter and provide for wild animals." },
+    { term: "Monsoon Forests", def: "Another name for deciduous forests, because their trees shed leaves." },
+    { term: "Water Table", def: "The level below the ground which is completely saturated/filled with water. Also called the water level." },
+    { term: "Percolate", def: "To cause a liquid to pass through / seep or drain through a porous substance or small holes / filter." },
+    { term: "Transpiration", def: "The process of loss of water from a plant into the air, through tiny openings called stomata on the underside of a leaf." },
+    { term: "Deforestation", def: "The cutting of trees to clear forests." },
+    { term: "Extinct", def: "When animals are wiped out completely and no longer exist." },
+    { term: "Endangered", def: "Animals that are at risk of becoming extinct." },
+    { term: "Chipko Movement", def: "'Chipko' means 'to hug' in Hindi. A movement by Uttarakhand peasants to stop tree felling by wood contractors, strengthened by Sunder Lal Bahuguna." },
+    { term: "Van Mahotsav", def: "A festival celebrated in the first week of July across India to encourage people to plant trees." },
+    { term: "Judicious Use", def: "Using natural resources wisely, so they are not wasted or overused." }
+  ];
+
+  var quizData = [
+    { q: "Why are forests called 'natural vegetation'?", options: ["They are planted by farmers", "They grow naturally in the region", "They are found only near rivers", "They never change with seasons"], answer: 1 },
+    { q: "Why are forests called the 'natural habitat' of animals?", options: ["They provide shelter to wild animals", "They are the coldest places on Earth", "They only grow near oceans", "They have no plants at all"], answer: 0 },
+    { q: "Which type of forest is found in areas of heavy rainfall and stays green all year?", options: ["Thorn forests", "Coniferous forests", "Evergreen forests", "Marshy forests"], answer: 2 },
+    { q: "Teak, Sal and Sheesham are examples of trees found in which forests?", options: ["Deciduous forests", "Coniferous forests", "Thorn forests", "Evergreen forests"], answer: 0 },
+    { q: "Deciduous forests are also known as ___ forests.", options: ["Desert", "Monsoon", "Polar", "Tidal"], answer: 1 },
+    { q: "Thorn forests, with short thorny trees like keekar and babool, are mostly found in which state?", options: ["Kerala", "Rajasthan", "Assam", "West Bengal"], answer: 1 },
+    { q: "Which forests have tall, cone-shaped trees with needle-shaped leaves, found in cold places like the Himalayan region?", options: ["Marshy forests", "Deciduous forests", "Mountain / Coniferous forests", "Thorn forests"], answer: 2 },
+    { q: "The marshy forests in the Ganga delta are known as the:", options: ["Western Ghats", "Deccan Plateau", "Sundarbans", "Aravallis"], answer: 2 },
+    { q: "What helps mangrove trees survive in the clayey soil of tidal forests?", options: ["Their needle-shaped leaves", "Their breathing roots", "Their thorny branches", "Their bright flowers"], answer: 1 },
+    { q: "In the forest, which layer do panthers and leopards mostly live in as excellent tree climbers?", options: ["Canopy", "Understorey", "Forest floor", "Underground"], answer: 1 },
+    { q: "What is the process called when trees release water vapour into the air?", options: ["Percolation", "Photosynthesis", "Transpiration", "Deforestation"], answer: 2 },
+    { q: "The level below the ground that is completely saturated with water is called the:", options: ["Water table", "Forest floor", "Canopy", "Delta"], answer: 0 },
+    { q: "What is the cutting down of forests called?", options: ["Afforestation", "Deforestation", "Conservation", "Cultivation"], answer: 1 },
+    { q: "Which movement, meaning 'to hug' in Hindi, was started by peasants in Uttarakhand to stop tree felling?", options: ["Van Mahotsav", "Chipko Movement", "Green Revolution", "Silent Valley Movement"], answer: 1 },
+    { q: "Which festival is celebrated in the first week of July across India to encourage tree planting?", options: ["Van Mahotsav", "Chipko Movement", "Harvest Festival", "Republic Day"], answer: 0 },
+    { q: "According to a recent Forest Survey of India study, what percentage of India's land area is under forest cover?", options: ["50.12%", "10.05%", "24.62%", "75.30%"], answer: 2 }
+  ];
+
+  // ---------------- FOREST TYPE EXPLORER ----------------
+  var tabsEl = document.getElementById("forest-tabs");
+  var detailEl = document.getElementById("forest-detail");
+
+  function renderForestDetail(idx) {
+    var f = forestTypes[idx];
+    detailEl.innerHTML =
+      '<h3>' + f.emoji + ' ' + f.name + '</h3>' +
+      '<span class="where-tag">📍 ' + f.where + '</span>' +
+      '<ul>' + f.facts.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+      '<div class="tree-chip-row">' + f.trees.map(function (t) { return '<span class="tree-chip">🌱 ' + t + '</span>'; }).join('') + '</div>';
+  }
+
+  forestTypes.forEach(function (f, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'forest-tab-btn' + (idx === 0 ? ' active' : '');
+    btn.style.background = f.color;
+    btn.textContent = f.emoji + ' ' + f.name;
+    btn.addEventListener('click', function () {
+      Array.prototype.forEach.call(tabsEl.children, function (c) { c.classList.remove('active'); });
+      btn.classList.add('active');
+      renderForestDetail(idx);
+    });
+    tabsEl.appendChild(btn);
+  });
+  renderForestDetail(0);
+
+  // ---------------- LOCATION TABLE ----------------
+  var tbody = document.getElementById("forest-table-body");
+  forestTypes.forEach(function (f) {
+    var tr = document.createElement('tr');
+    tr.innerHTML =
+      '<td><strong>' + f.emoji + ' ' + f.name + '</strong></td>' +
+      '<td>' + f.facts[0] + '</td>' +
+      '<td>' + f.where + '</td>' +
+      '<td>' + f.trees.join(', ') + '</td>';
+    tbody.appendChild(tr);
+  });
+
+  // ---------------- LAYER DIAGRAM ----------------
+  var layerDiagram = document.getElementById("layer-diagram");
+  layers.forEach(function (l, i) {
+    var div = document.createElement('div');
+    div.className = 'layer ' + l.key + (i === 0 ? ' open' : '');
+    div.innerHTML = '<div class="layer-title">' + l.title + '</div><div class="layer-detail">' + l.detail + '</div>';
+    div.addEventListener('click', function () {
+      div.classList.toggle('open');
+    });
+    layerDiagram.appendChild(div);
+  });
+
+  // ---------------- RESOURCE GRID ----------------
+  var resourceGrid = document.getElementById("resource-grid");
+  resources.forEach(function (r) {
+    var div = document.createElement('div');
+    div.className = 'resource-card';
+    div.innerHTML = '<div class="emoji">' + r.emoji + '</div><h4>' + r.name + '</h4><p>' + r.desc + '</p>';
+    resourceGrid.appendChild(div);
+  });
+
+  // ---------------- CAUSE / EFFECT ----------------
+  var ceGrid = document.getElementById("cause-effect");
+  causeEffect.forEach(function (c) {
+    var div = document.createElement('div');
+    div.className = 'ce-card';
+    div.innerHTML = '<div class="step">' + c.step + '</div><p>' + c.text + '</p>';
+    ceGrid.appendChild(div);
+  });
+
+  // ---------------- THREATS ACCORDION ----------------
+  var accWrap = document.getElementById("threats-accordion");
+  threats.forEach(function (t) {
+    var item = document.createElement('div');
+    item.className = 'accordion-item';
+    item.innerHTML =
+      '<div class="accordion-header"><span>' + t.title + '</span><span class="arrow">▾</span></div>' +
+      '<div class="accordion-body"><div class="accordion-body-inner">' + t.body + '</div></div>';
+    item.querySelector('.accordion-header').addEventListener('click', function () {
+      item.classList.toggle('open');
+    });
+    accWrap.appendChild(item);
+  });
+
+  // ---------------- GLOSSARY ----------------
+  var glossaryGrid = document.getElementById("glossary-grid");
+  glossary.forEach(function (g) {
+    var card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML =
+      '<div class="flip-inner">' +
+        '<div class="flip-front">' + g.term + '<div class="flip-hint">tap to flip</div></div>' +
+        '<div class="flip-back">' + g.def + '</div>' +
+      '</div>';
+    card.addEventListener('click', function () { card.classList.toggle('flipped'); });
+    glossaryGrid.appendChild(card);
+  });
+
+  // ---------------- QUIZ ----------------
+  var quizPanel = document.getElementById("quiz-panel");
+  var qIndex = 0;
+  var score = 0;
+  var answered = false;
+
+  function shuffledQuiz() {
+    var arr = quizData.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+  var quizOrder = shuffledQuiz();
+
+  function renderQuiz() {
+    if (qIndex >= quizOrder.length) {
+      renderResult();
+      return;
+    }
+    answered = false;
+    var q = quizOrder[qIndex];
+    quizPanel.innerHTML =
+      '<div class="quiz-progress">Question ' + (qIndex + 1) + ' of ' + quizOrder.length + ' &nbsp;·&nbsp; Score: ' + score + '</div>' +
+      '<div class="quiz-question">' + q.q + '</div>' +
+      '<div class="quiz-options"></div>' +
+      '<div class="quiz-feedback"></div>' +
+      '<div class="quiz-nav"><button class="quiz-btn" id="next-btn" disabled>Next ➜</button></div>';
+
+    var optWrap = quizPanel.querySelector('.quiz-options');
+    q.options.forEach(function (opt, i) {
+      var b = document.createElement('button');
+      b.className = 'quiz-opt';
+      b.textContent = opt;
+      b.addEventListener('click', function () {
+        if (answered) return;
+        answered = true;
+        var opts = optWrap.querySelectorAll('.quiz-opt');
+        opts[q.answer].classList.add('correct');
+        if (i !== q.answer) b.classList.add('wrong');
+        Array.prototype.forEach.call(opts, function (o) { o.disabled = true; });
+        var fb = quizPanel.querySelector('.quiz-feedback');
+        if (i === q.answer) {
+          score++;
+          fb.textContent = '🎉 Correct!';
+          fb.style.color = '#2f9e44';
+        } else {
+          fb.textContent = '🌿 Not quite — the right answer is highlighted.';
+          fb.style.color = '#e8590c';
+        }
+        document.getElementById('next-btn').disabled = false;
+      });
+      optWrap.appendChild(b);
+    });
+
+    document.getElementById('next-btn').addEventListener('click', function () {
+      qIndex++;
+      renderQuiz();
+    });
+  }
+
+  function renderResult() {
+    var pct = Math.round((score / quizOrder.length) * 100);
+    var msg = pct === 100 ? "🌟 Perfect score! You know your forests!" :
+              pct >= 70 ? "🌳 Great job! You're a forest expert." :
+              pct >= 40 ? "🌱 Good try! Review the sections above and try again." :
+              "🍃 Keep exploring the page above, then try again!";
+    quizPanel.innerHTML =
+      '<div class="quiz-result">' +
+        '<div class="score-num">' + score + ' / ' + quizOrder.length + '</div>' +
+        '<p style="font-weight:700; font-size:1.1rem;">' + msg + '</p>' +
+        '<button class="quiz-btn" id="restart-btn">🔁 Try Again</button>' +
+      '</div>';
+    document.getElementById('restart-btn').addEventListener('click', function () {
+      qIndex = 0;
+      score = 0;
+      quizOrder = shuffledQuiz();
+      renderQuiz();
+    });
+  }
+
+  renderQuiz();
+
+  // ---------------- NAV ACTIVE STATE ----------------
+  var navLinks = document.querySelectorAll('#tabnav a');
+  var sections = document.querySelectorAll('main section[id]');
+  function updateActiveNav() {
+    var scrollPos = window.scrollY + 100;
+    var current = sections[0].id;
+    sections.forEach(function (s) {
+      if (s.offsetTop <= scrollPos) current = s.id;
+    });
+    navLinks.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+})();
+</script>
+</body>
+</html>
