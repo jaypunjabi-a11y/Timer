@@ -309,6 +309,8 @@
 
   /* ---------- Location card (Where Do Forests Grow) ---------- */
   .location-card {
+    position: relative;
+    overflow: hidden;
     border-radius: 24px;
     padding: 26px 24px;
     color: #fff;
@@ -316,6 +318,110 @@
     box-shadow: 0 14px 30px rgba(0,0,0,0.16);
     animation: fadeIn 0.3s ease;
     margin: 4px 0 14px;
+  }
+  .location-card .loc-content { position: relative; z-index: 1; }
+
+  /* Weather effects layer */
+  .weather-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .weather-layer .drop {
+    position: absolute;
+    top: -6%;
+    width: 2px;
+    height: 16px;
+    background: rgba(255,255,255,0.75);
+    border-radius: 2px;
+    animation: fall-rain linear infinite;
+  }
+  .weather-layer .flake {
+    position: absolute;
+    top: -8%;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(255,255,255,0.7);
+    animation: fall-snow linear infinite;
+  }
+  .weather-layer .leaf {
+    position: absolute;
+    top: -8%;
+    font-size: 1rem;
+    animation: fall-leaf linear infinite;
+  }
+  .weather-layer .sun-glow {
+    position: absolute;
+    top: 6px;
+    right: 14px;
+    font-size: 2.4rem;
+    animation: sun-shimmer 2.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.55));
+  }
+  .weather-layer .dust {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.55);
+    animation: dust-drift linear infinite;
+  }
+  .weather-layer .wave {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: -14px;
+    height: 46px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 46% 44% 0 0 / 100% 100% 0 0;
+    animation: wave-move 5s ease-in-out infinite;
+  }
+  .weather-layer .wave.wave2 {
+    bottom: -22px;
+    height: 40px;
+    background: rgba(255,255,255,0.14);
+    animation-duration: 7s;
+    animation-direction: reverse;
+  }
+
+  @keyframes fall-rain {
+    0% { transform: translateY(-10px); opacity: 0; }
+    12% { opacity: 0.9; }
+    100% { transform: translateY(320px); opacity: 0.15; }
+  }
+  @keyframes fall-snow {
+    0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+    12% { opacity: 0.9; }
+    100% { transform: translateY(320px) translateX(16px); opacity: 0.2; }
+  }
+  @keyframes fall-leaf {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+    12% { opacity: 0.9; }
+    100% { transform: translateY(320px) rotate(320deg); opacity: 0.1; }
+  }
+  @keyframes sun-shimmer {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 0.95; transform: scale(1.12); }
+  }
+  @keyframes dust-drift {
+    0% { transform: translateX(0); opacity: 0; }
+    15% { opacity: 0.6; }
+    100% { transform: translateX(46px); opacity: 0; }
+  }
+  @keyframes wave-move {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(-14px) translateY(-5px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .weather-layer .drop,
+    .weather-layer .flake,
+    .weather-layer .leaf,
+    .weather-layer .sun-glow,
+    .weather-layer .dust,
+    .weather-layer .wave {
+      animation: none !important;
+    }
   }
   .location-card .loc-grove {
     font-size: 2.6rem;
@@ -1171,6 +1277,7 @@
       name: "Evergreen Forests",
       emoji: "🌴",
       color: "linear-gradient(135deg,#2f9e44,#40c057)",
+      weather: "rain",
       facts: [
         "Found in areas which receive heavy rainfall.",
         "Trees in these forests remain green throughout the year.",
@@ -1184,6 +1291,7 @@
       name: "Deciduous Forests",
       emoji: "🍂",
       color: "linear-gradient(135deg,#e8590c,#f08c00)",
+      weather: "leaves",
       facts: [
         "Trees of these forests shed their leaves — that's why they are also called monsoon forests.",
         "They are found in warmer areas of the Southern Plateau (Andhra Pradesh) and in the foothills of the Himalayas.",
@@ -1197,6 +1305,7 @@
       name: "Thorn Forests",
       emoji: "🌵",
       color: "linear-gradient(135deg,#d9480f,#f76707)",
+      weather: "sun",
       facts: [
         "Found in areas with very little rainfall.",
         "Trees and shrubs are short and thorny."
@@ -1209,6 +1318,7 @@
       name: "Mountain / Coniferous Forests",
       emoji: "🌲",
       color: "linear-gradient(135deg,#1971c2,#4dabf7)",
+      weather: "snow",
       facts: [
         "Found in places that are cold most of the time.",
         "Trees mostly have tall and cone-shaped trunks with needle-shaped leaves.",
@@ -1222,6 +1332,7 @@
       name: "Marshy / Tidal Forests",
       emoji: "🌊",
       color: "linear-gradient(135deg,#0c8599,#22b8cf)",
+      weather: "waves",
       facts: [
         "Found in the deltas of rivers such as the Ganga, Mahanadi and Godavari.",
         "The Ganga delta marshy forests are known as the Sundarbans.",
@@ -1509,6 +1620,66 @@
   var locationDotsEl = document.getElementById("location-dots");
   var locIndex = 0;
 
+  function buildWeatherLayer(type) {
+    var layer = document.createElement('div');
+    layer.className = 'weather-layer';
+    var i, el;
+    if (type === 'rain') {
+      for (i = 0; i < 26; i++) {
+        el = document.createElement('span');
+        el.className = 'drop';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.animationDelay = (Math.random() * 2) + 's';
+        el.style.animationDuration = (0.6 + Math.random() * 0.5) + 's';
+        layer.appendChild(el);
+      }
+    } else if (type === 'snow') {
+      for (i = 0; i < 20; i++) {
+        el = document.createElement('span');
+        el.className = 'flake';
+        el.textContent = '❄';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.fontSize = (0.6 + Math.random() * 0.6) + 'rem';
+        el.style.animationDelay = (Math.random() * 4) + 's';
+        el.style.animationDuration = (3 + Math.random() * 3) + 's';
+        layer.appendChild(el);
+      }
+    } else if (type === 'leaves') {
+      var leafEmoji = ['🍂', '🍁'];
+      for (i = 0; i < 14; i++) {
+        el = document.createElement('span');
+        el.className = 'leaf';
+        el.textContent = leafEmoji[i % 2];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.animationDelay = (Math.random() * 4) + 's';
+        el.style.animationDuration = (3.5 + Math.random() * 2.5) + 's';
+        layer.appendChild(el);
+      }
+    } else if (type === 'sun') {
+      el = document.createElement('span');
+      el.className = 'sun-glow';
+      el.textContent = '☀️';
+      layer.appendChild(el);
+      for (i = 0; i < 10; i++) {
+        var dust = document.createElement('span');
+        dust.className = 'dust';
+        dust.style.left = Math.random() * 100 + '%';
+        dust.style.top = (40 + Math.random() * 50) + '%';
+        dust.style.animationDelay = (Math.random() * 3) + 's';
+        dust.style.animationDuration = (3 + Math.random() * 2) + 's';
+        layer.appendChild(dust);
+      }
+    } else if (type === 'waves') {
+      el = document.createElement('span');
+      el.className = 'wave wave1';
+      layer.appendChild(el);
+      el = document.createElement('span');
+      el.className = 'wave wave2';
+      layer.appendChild(el);
+    }
+    return layer;
+  }
+
   function renderLocationCard() {
     var row = locationTable[locIndex];
     var f = forestTypes.filter(function (x) { return x.key === row.key; })[0];
@@ -1516,15 +1687,18 @@
     var exampleChips = chipify(row.examples);
     locationCardEl.style.background = f.color;
     locationCardEl.innerHTML =
-      '<div class="loc-grove">' + f.emoji + f.emoji + f.emoji + '</div>' +
-      '<h3>' + f.name + '</h3>' +
-      '<div class="loc-row"><span class="loc-label">☔ Found</span>' + row.places + '</div>' +
-      '<div class="loc-row"><span class="loc-label">📍 States / Union Territories</span>' +
-        '<div class="loc-chip-row">' + stateChips.map(function (s) { return '<span class="loc-chip">' + s + '</span>'; }).join('') + '</div>' +
-      '</div>' +
-      '<div class="loc-row"><span class="loc-label">🌿 Example Plants / Trees</span>' +
-        '<div class="loc-chip-row">' + exampleChips.map(function (s) { return '<span class="loc-chip">🌱 ' + s + '</span>'; }).join('') + '</div>' +
+      '<div class="loc-content">' +
+        '<div class="loc-grove">' + f.emoji + f.emoji + f.emoji + '</div>' +
+        '<h3>' + f.name + '</h3>' +
+        '<div class="loc-row"><span class="loc-label">☔ Found</span>' + row.places + '</div>' +
+        '<div class="loc-row"><span class="loc-label">📍 States / Union Territories</span>' +
+          '<div class="loc-chip-row">' + stateChips.map(function (s) { return '<span class="loc-chip">' + s + '</span>'; }).join('') + '</div>' +
+        '</div>' +
+        '<div class="loc-row"><span class="loc-label">🌿 Example Plants / Trees</span>' +
+          '<div class="loc-chip-row">' + exampleChips.map(function (s) { return '<span class="loc-chip">🌱 ' + s + '</span>'; }).join('') + '</div>' +
+        '</div>' +
       '</div>';
+    locationCardEl.insertBefore(buildWeatherLayer(f.weather), locationCardEl.firstChild);
 
     Array.prototype.forEach.call(locationTabsEl.children, function (btn, i) {
       btn.classList.toggle('active', i === locIndex);
