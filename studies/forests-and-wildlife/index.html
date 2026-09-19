@@ -131,6 +131,17 @@
     scroll-margin-top: 70px;
   }
 
+  .parallel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+    align-items: start;
+    margin-top: 46px;
+  }
+  .parallel-grid section {
+    margin-top: 0;
+  }
+
   .section-head {
     display: flex;
     align-items: center;
@@ -798,39 +809,40 @@
 
 <main>
 
-  <!-- INTRO -->
-  <section id="intro">
-    <div class="section-head">
-      <div class="icon-badge">🌱</div>
-      <h2><span class="eyebrow">Getting started</span>What is a Forest?</h2>
-    </div>
-    <div class="panel">
-      <p class="lead"><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. The kind of trees and plants that grow in a forest depend on the <strong>climate</strong> and <strong>soil</strong> of the place.</p>
-      <div class="fact-grid">
-        <div class="fact-card">
-          <h3>🌿 Natural Vegetation</h3>
-          <p>Forests grow naturally in a region — that's why they are called <strong>natural vegetation</strong>.</p>
-        </div>
-        <div class="fact-card">
-          <h3>🏡 Natural Habitat</h3>
-          <p>Forests provide shelter to many wild animals — that's why they are called the <strong>natural habitat of the animals</strong>.</p>
-        </div>
+  <!-- INTRO + FOREST TYPES (side by side) -->
+  <div class="parallel-grid">
+    <section id="intro">
+      <div class="section-head">
+        <div class="icon-badge">🌱</div>
+        <h2><span class="eyebrow">Getting started</span>What is a Forest?</h2>
       </div>
-      <p class="lead" style="margin-top:16px;">India has a great diversity of natural ecosystems, and our forests can be divided into <strong>five main groups</strong>. Explore each one below!</p>
-    </div>
-  </section>
+      <div class="panel">
+        <p class="lead"><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. The kind of trees and plants that grow in a forest depend on the <strong>climate</strong> and <strong>soil</strong> of the place.</p>
+        <div class="fact-grid">
+          <div class="fact-card">
+            <h3>🌿 Natural Vegetation</h3>
+            <p>Forests grow naturally in a region — that's why they are called <strong>natural vegetation</strong>.</p>
+          </div>
+          <div class="fact-card">
+            <h3>🏡 Natural Habitat</h3>
+            <p>Forests provide shelter to many wild animals — that's why they are called the <strong>natural habitat of the animals</strong>.</p>
+          </div>
+        </div>
+        <p class="lead" style="margin-top:16px;">India has a great diversity of natural ecosystems, and our forests can be divided into <strong>five main groups</strong>. Explore each one alongside!</p>
+      </div>
+    </section>
 
-  <!-- FOREST TYPES -->
-  <section id="types">
-    <div class="section-head">
-      <div class="icon-badge">🌳</div>
-      <h2><span class="eyebrow">Explore</span>Types of Forests in India</h2>
-    </div>
-    <div class="panel">
-      <div class="forest-tabs" id="forest-tabs"></div>
-      <div class="forest-detail" id="forest-detail"></div>
-    </div>
-  </section>
+    <section id="types">
+      <div class="section-head">
+        <div class="icon-badge">🌳</div>
+        <h2><span class="eyebrow">Explore</span>Types of Forests in India</h2>
+      </div>
+      <div class="panel">
+        <div class="forest-tabs" id="forest-tabs"></div>
+        <div class="forest-detail" id="forest-detail"></div>
+      </div>
+    </section>
+  </div>
 
   <!-- WHERE -->
   <section id="where">
