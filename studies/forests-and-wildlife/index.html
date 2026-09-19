@@ -639,6 +639,62 @@
   .summary-list li { margin-bottom: 10px; line-height: 1.6; font-size: 0.95rem; }
   .summary-list li strong { color: var(--leaf-dark); }
 
+  /* ---------- Quiz hub ---------- */
+  .quiz-hub-intro {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #5a6e5c;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .quiz-hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .quiz-hub-card {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    border-radius: 18px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 0 rgba(63,145,66,0.12);
+    transition: transform 0.15s ease;
+  }
+  .quiz-hub-card:hover { transform: translateY(-3px); border-color: var(--leaf); }
+  .quiz-hub-card .qh-icon { font-size: 1.9rem; }
+  .quiz-hub-card h3 {
+    margin: 8px 0 2px;
+    font-size: 0.88rem;
+    color: var(--leaf-dark);
+  }
+  .quiz-hub-card .qh-title { font-size: 0.78rem; font-weight: 600; color: var(--ink); min-height: 32px; }
+  .quiz-hub-card .qh-count { font-size: 0.72rem; color: #7a8c7c; font-weight: 600; margin-top: 4px; }
+  .quiz-hub-card .qh-best {
+    margin-top: 8px;
+    display: inline-block;
+    background: var(--leaf-light);
+    color: var(--leaf-dark);
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .quiz-back-btn {
+    background: none;
+    border: none;
+    color: var(--leaf-dark);
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+    padding: 0;
+  }
+  .quiz-result-nav { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+  .quiz-btn.hub-btn { background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); }
+
   /* ---------- Quiz ---------- */
   #quiz-panel { position: relative; }
   .quiz-progress {
@@ -1510,35 +1566,98 @@
     glossaryGrid.appendChild(card);
   });
 
-  // ---------------- QUIZ ----------------
+  // ---------------- QUIZ (split into 9 shorter quizzes) ----------------
   var quizPanel = document.getElementById("quiz-panel");
+
+  var quizSectionMeta = [
+    { title: "Forest Basics", icon: "🌱", size: 5 },
+    { title: "Forest Types & Layers", icon: "🌳", size: 5 },
+    { title: "Water, Soil & Chipko", icon: "💧", size: 5 },
+    { title: "Forest Facts & The Subcontinent", icon: "🌏", size: 5 },
+    { title: "Parks & Protected Areas", icon: "🏞️", size: 5 },
+    { title: "Parks & Famous Animals", icon: "🐯", size: 5 },
+    { title: "Wildlife Factfile I", icon: "🦌", size: 5 },
+    { title: "Wildlife Factfile II", icon: "🐆", size: 5 },
+    { title: "Conservation Wrap-Up", icon: "🦏", size: 6 }
+  ];
+
+  var quizSections = (function () {
+    var out = [];
+    var pos = 0;
+    quizSectionMeta.forEach(function (m, i) {
+      out.push({
+        id: "quiz" + (i + 1),
+        title: m.title,
+        icon: m.icon,
+        questions: quizData.slice(pos, pos + m.size)
+      });
+      pos += m.size;
+    });
+    return out;
+  })();
+
+  var currentSectionIdx = null;
+  var sectionOrder = [];
   var qIndex = 0;
   var score = 0;
   var answered = false;
+  var bestScores = {};
 
-  function shuffledQuiz() {
-    var arr = quizData.slice();
+  function shuffled(list) {
+    var arr = list.slice();
     for (var i = arr.length - 1; i > 0; i--) {
       var j = Math.floor(Math.random() * (i + 1));
       var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
     }
     return arr;
   }
-  var quizOrder = shuffledQuiz();
+
+  function renderQuizHub() {
+    currentSectionIdx = null;
+    var html = '<div class="quiz-hub-intro">Pick a quiz below — each one is short and quick!</div><div class="quiz-hub-grid">';
+    quizSections.forEach(function (s, i) {
+      var best = bestScores[s.id];
+      html +=
+        '<div class="quiz-hub-card" data-idx="' + i + '">' +
+          '<div class="qh-icon">' + s.icon + '</div>' +
+          '<h3>Quiz ' + (i + 1) + '</h3>' +
+          '<div class="qh-title">' + s.title + '</div>' +
+          '<div class="qh-count">' + s.questions.length + ' questions</div>' +
+          (best !== undefined ? '<div class="qh-best">✅ Best: ' + best + '/' + s.questions.length + '</div>' : '') +
+        '</div>';
+    });
+    html += '</div>';
+    quizPanel.innerHTML = html;
+    var cards = quizPanel.querySelectorAll('.quiz-hub-card');
+    Array.prototype.forEach.call(cards, function (c) {
+      c.addEventListener('click', function () {
+        var idx = parseInt(c.getAttribute('data-idx'), 10);
+        currentSectionIdx = idx;
+        sectionOrder = shuffled(quizSections[idx].questions);
+        qIndex = 0;
+        score = 0;
+        renderQuiz();
+      });
+    });
+  }
 
   function renderQuiz() {
-    if (qIndex >= quizOrder.length) {
+    var section = quizSections[currentSectionIdx];
+    if (qIndex >= sectionOrder.length) {
       renderResult();
       return;
     }
     answered = false;
-    var q = quizOrder[qIndex];
+    var q = sectionOrder[qIndex];
     quizPanel.innerHTML =
-      '<div class="quiz-progress">Question ' + (qIndex + 1) + ' of ' + quizOrder.length + ' &nbsp;·&nbsp; Score: ' + score + '</div>' +
+      '<button class="quiz-back-btn" id="back-btn">← Back to Quizzes</button>' +
+      '<div class="quiz-progress">' + section.icon + ' Quiz ' + (currentSectionIdx + 1) + ': ' + section.title + ' &nbsp;·&nbsp; Question ' + (qIndex + 1) + ' of ' + sectionOrder.length + ' &nbsp;·&nbsp; Score: ' + score + '</div>' +
       '<div class="quiz-question">' + q.q + '</div>' +
       '<div class="quiz-options"></div>' +
       '<div class="quiz-feedback"></div>' +
       '<div class="quiz-nav"><button class="quiz-btn" id="next-btn" disabled>Next ➜</button></div>';
+
+    document.getElementById('back-btn').addEventListener('click', renderQuizHub);
 
     var optWrap = quizPanel.querySelector('.quiz-options');
     q.options.forEach(function (opt, i) {
@@ -1573,26 +1692,34 @@
   }
 
   function renderResult() {
-    var pct = Math.round((score / quizOrder.length) * 100);
-    var msg = pct === 100 ? "🌟 Perfect score! You know your forests!" :
-              pct >= 70 ? "🌳 Great job! You're a forest expert." :
-              pct >= 40 ? "🌱 Good try! Review the sections above and try again." :
+    var section = quizSections[currentSectionIdx];
+    var total = sectionOrder.length;
+    bestScores[section.id] = Math.max(bestScores[section.id] || 0, score);
+    var pct = Math.round((score / total) * 100);
+    var msg = pct === 100 ? "🌟 Perfect score! You know this topic!" :
+              pct >= 70 ? "🌳 Great job!" :
+              pct >= 40 ? "🌱 Good try! Review this section above and try again." :
               "🍃 Keep exploring the page above, then try again!";
     quizPanel.innerHTML =
       '<div class="quiz-result">' +
-        '<div class="score-num">' + score + ' / ' + quizOrder.length + '</div>' +
+        '<div style="font-weight:700; color:var(--leaf-dark); margin-bottom:4px;">' + section.icon + ' Quiz ' + (currentSectionIdx + 1) + ': ' + section.title + '</div>' +
+        '<div class="score-num">' + score + ' / ' + total + '</div>' +
         '<p style="font-weight:700; font-size:1.1rem;">' + msg + '</p>' +
-        '<button class="quiz-btn" id="restart-btn">🔁 Try Again</button>' +
+        '<div class="quiz-result-nav">' +
+          '<button class="quiz-btn" id="restart-btn">🔁 Try Again</button>' +
+          '<button class="quiz-btn hub-btn" id="hub-btn">📋 All Quizzes</button>' +
+        '</div>' +
       '</div>';
     document.getElementById('restart-btn').addEventListener('click', function () {
+      sectionOrder = shuffled(section.questions);
       qIndex = 0;
       score = 0;
-      quizOrder = shuffledQuiz();
       renderQuiz();
     });
+    document.getElementById('hub-btn').addEventListener('click', renderQuizHub);
   }
 
-  renderQuiz();
+  renderQuizHub();
 
   // ---------------- NAV ACTIVE STATE ----------------
   var navLinks = document.querySelectorAll('#tabnav a');
