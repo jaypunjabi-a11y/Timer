@@ -384,6 +384,22 @@
     animation-duration: 7s;
     animation-direction: reverse;
   }
+  .weather-layer .wave.mud-wave {
+    background: rgba(90,58,26,0.55);
+  }
+  .weather-layer .wave.mud-wave.wave2 {
+    background: rgba(120,80,40,0.4);
+  }
+  .weather-layer .bubble {
+    position: absolute;
+    bottom: 4%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(200,168,120,0.6);
+    border: 1px solid rgba(255,255,255,0.25);
+    animation: bubble-rise linear infinite;
+  }
 
   @keyframes fall-rain {
     0% { transform: translateY(-10px); opacity: 0; }
@@ -413,13 +429,20 @@
     0%, 100% { transform: translateX(0) translateY(0); }
     50% { transform: translateX(-14px) translateY(-5px); }
   }
+  @keyframes bubble-rise {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    15% { opacity: 0.8; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-90px) scale(1); opacity: 0; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .weather-layer .drop,
     .weather-layer .flake,
     .weather-layer .leaf,
     .weather-layer .sun-glow,
     .weather-layer .dust,
-    .weather-layer .wave {
+    .weather-layer .wave,
+    .weather-layer .bubble {
       animation: none !important;
     }
   }
@@ -1331,8 +1354,8 @@
       key: "marshy",
       name: "Marshy / Tidal Forests",
       emoji: "🌊",
-      color: "linear-gradient(135deg,#0c8599,#22b8cf)",
-      weather: "waves",
+      color: "linear-gradient(135deg,#5c3d21,#8a6239)",
+      weather: "mud",
       facts: [
         "Found in the deltas of rivers such as the Ganga, Mahanadi and Godavari.",
         "The Ganga delta marshy forests are known as the Sundarbans.",
@@ -1676,6 +1699,21 @@
       el = document.createElement('span');
       el.className = 'wave wave2';
       layer.appendChild(el);
+    } else if (type === 'mud') {
+      el = document.createElement('span');
+      el.className = 'wave mud-wave wave1';
+      layer.appendChild(el);
+      el = document.createElement('span');
+      el.className = 'wave mud-wave wave2';
+      layer.appendChild(el);
+      for (i = 0; i < 9; i++) {
+        var bubble = document.createElement('span');
+        bubble.className = 'bubble';
+        bubble.style.left = (5 + Math.random() * 90) + '%';
+        bubble.style.animationDelay = (Math.random() * 3.5) + 's';
+        bubble.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+        layer.appendChild(bubble);
+      }
     }
     return layer;
   }
