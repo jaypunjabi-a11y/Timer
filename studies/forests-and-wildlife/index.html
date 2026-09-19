@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forests and Wildlife — Dishika's Study Explorer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --leaf: #3f9142;
+    --leaf-dark: #276b2b;
+    --leaf-light: #7fd48a;
+    --bark: #8a5a34;
+    --sun: #ffcf3f;
+    --sky: #4d96ff;
+    --berry: #ff6fa5;
+    --river: #2ec4b6;
+    --soil: #c99a5b;
+    --paper: #fffdf6;
+    --ink: #2a3b2c;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Fredoka', sans-serif;
+    color: var(--ink);
+    background: linear-gradient(180deg, #eafaec 0%, #f5fbee 40%, #fff9ec 100%);
+    padding-bottom: 60px;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 800;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    background: linear-gradient(-45deg, var(--leaf-dark), var(--leaf), #56b25c, var(--river));
+    background-size: 300% 300%;
+    animation: gradientShift 16s ease infinite;
+    color: #fff;
+    padding: 18px 20px 34px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .hero .unit-tag {
+    display: inline-block;
+    background: rgba(255,255,255,0.22);
+    border: 2px solid rgba(255,255,255,0.5);
+    border-radius: 999px;
+    padding: 4px 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 0.78rem;
+    margin-bottom: 6px;
+  }
+  .hero h1 {
+    font-size: clamp(1.5rem, 5vw, 2.2rem);
+    margin: 4px 0 4px;
+    text-shadow: 0 4px 0 rgba(0,0,0,0.12);
+  }
+  .hero p.tagline {
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.95;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  .hero .emoji-row {
+    font-size: 1.4rem;
+    margin-top: 8px;
+    letter-spacing: 8px;
+  }
+
+  /* ---------- Sticky nav ---------- */
+  nav.tabs {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,253,246,0.95);
+    backdrop-filter: blur(6px);
+    border-bottom: 3px solid var(--leaf-light);
+    padding: 10px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: -16px;
+  }
+  nav.tabs a {
+    text-decoration: none;
+    color: var(--leaf-dark);
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 7px 13px;
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  nav.tabs a:hover, nav.tabs a.active {
+    background: var(--leaf);
+    color: #fff;
+    border-color: var(--leaf);
+    transform: translateY(-2px);
+  }
+
+  main {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+
+  section {
+    margin-top: 46px;
+    scroll-margin-top: 70px;
+  }
+
+  .parallel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    align-items: stretch;
+    height: calc(100dvh - var(--header-h, 240px) - 20px);
+    min-height: 340px;
+    max-height: 580px;
+  }
+  .parallel-grid .panel-col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .parallel-grid .col-label {
+    flex: 0 0 auto;
+    margin: 0 0 10px;
+    font-size: 1rem;
+    color: var(--leaf-dark);
+  }
+  .parallel-grid .panel {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  .types-col .panel {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .types-col .panel .forest-tabs { flex: 0 0 auto; }
+  .types-col .panel .forest-detail {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+  }
+  @media (max-width: 720px) {
+    .parallel-grid {
+      height: auto;
+      max-height: none;
+      min-height: 0;
+    }
+    .parallel-grid .panel {
+      overflow-y: visible;
+      max-height: none;
+    }
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .section-head .icon-badge {
+    font-size: 1.8rem;
+    background: #fff;
+    border: 3px solid var(--leaf-light);
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.06);
+  }
+  .section-head h2 {
+    font-size: clamp(1.3rem, 4vw, 1.7rem);
+    color: var(--leaf-dark);
+    margin: 0;
+  }
+  .section-head .eyebrow {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--river);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .panel {
+    background: var(--paper);
+    border: 3px solid #fff;
+    border-radius: 26px;
+    box-shadow: 0 14px 30px rgba(40,80,40,0.1);
+    padding: 22px 22px 26px;
+  }
+
+  .lead {
+    font-size: 1.02rem;
+    line-height: 1.6;
+    margin: 0 0 10px;
+  }
+
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .fact-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 16px;
+    border: 2px solid var(--leaf-light);
+    box-shadow: 0 6px 0 rgba(63,145,66,0.12);
+  }
+  .fact-card h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    color: var(--leaf-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fact-card p { margin: 0; font-size: 0.92rem; line-height: 1.5; }
+
+  /* ---------- Forest type explorer ---------- */
+  .forest-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .forest-tab-btn {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 14px;
+    cursor: pointer;
+    color: #fff;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+    transition: transform 0.15s ease;
+    flex: 1 1 150px;
+  }
+  .forest-tab-btn:hover { transform: translateY(-2px); }
+  .forest-tab-btn.active { outline: 3px solid var(--sun); outline-offset: 2px; }
+
+  .forest-detail {
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    border: 3px solid var(--leaf-light);
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px);} to { opacity: 1; transform: translateY(0);} }
+  .forest-detail h3 {
+    margin: 0 0 4px;
+    font-size: 1.3rem;
+  }
+  .forest-detail .where-tag {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--sky);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .forest-detail ul { margin: 8px 0; padding-left: 22px; }
+  .forest-detail li { margin-bottom: 5px; line-height: 1.5; }
+  .tree-chip-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .tree-chip {
+    background: var(--leaf-light);
+    color: var(--leaf-dark);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+
+  /* ---------- Location card (Where Do Forests Grow) ---------- */
+  .location-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px;
+    padding: 26px 24px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 14px 30px rgba(0,0,0,0.16);
+    animation: fadeIn 0.3s ease;
+    margin: 4px 0 14px;
+  }
+  .location-card .loc-content { position: relative; z-index: 1; }
+
+  /* Weather effects layer */
+  .weather-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .weather-layer .drop {
+    position: absolute;
+    top: -6%;
+    width: 2px;
+    height: 16px;
+    background: rgba(255,255,255,0.75);
+    border-radius: 2px;
+    animation: fall-rain linear infinite;
+  }
+  .weather-layer .flake {
+    position: absolute;
+    top: -8%;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(255,255,255,0.7);
+    animation: fall-snow linear infinite;
+  }
+  .weather-layer .leaf {
+    position: absolute;
+    top: -8%;
+    font-size: 1rem;
+    animation: fall-leaf linear infinite;
+  }
+  .weather-layer .sun-glow {
+    position: absolute;
+    top: 6px;
+    right: 14px;
+    font-size: 2.4rem;
+    animation: sun-shimmer 2.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.55));
+  }
+  .weather-layer .dust {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.55);
+    animation: dust-drift linear infinite;
+  }
+  .weather-layer .wave {
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    bottom: -14px;
+    height: 46px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 46% 44% 0 0 / 100% 100% 0 0;
+    animation: wave-move 5s ease-in-out infinite;
+  }
+  .weather-layer .wave.wave2 {
+    bottom: -22px;
+    height: 40px;
+    background: rgba(255,255,255,0.14);
+    animation-duration: 7s;
+    animation-direction: reverse;
+  }
+  .weather-layer .wave.mud-wave {
+    height: 60px;
+    background: rgba(61,38,15,0.78);
+  }
+  .weather-layer .wave.mud-wave.wave2 {
+    height: 50px;
+    background: rgba(90,58,26,0.55);
+  }
+  .weather-layer .bubble {
+    position: absolute;
+    bottom: 4%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(200,168,120,0.6);
+    border: 1px solid rgba(255,255,255,0.25);
+    animation: bubble-rise linear infinite;
+  }
+
+  @keyframes fall-rain {
+    0% { transform: translateY(-10px); opacity: 0; }
+    12% { opacity: 0.9; }
+    100% { transform: translateY(320px); opacity: 0.15; }
+  }
+  @keyframes fall-snow {
+    0% { transform: translateY(-10px) translateX(0); opacity: 0; }
+    12% { opacity: 0.9; }
+    100% { transform: translateY(320px) translateX(16px); opacity: 0.2; }
+  }
+  @keyframes fall-leaf {
+    0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
+    12% { opacity: 0.9; }
+    100% { transform: translateY(320px) rotate(320deg); opacity: 0.1; }
+  }
+  @keyframes sun-shimmer {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 0.95; transform: scale(1.12); }
+  }
+  @keyframes dust-drift {
+    0% { transform: translateX(0); opacity: 0; }
+    15% { opacity: 0.6; }
+    100% { transform: translateX(46px); opacity: 0; }
+  }
+  @keyframes wave-move {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(-14px) translateY(-5px); }
+  }
+  @keyframes bubble-rise {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    15% { opacity: 0.8; }
+    90% { opacity: 0.5; }
+    100% { transform: translateY(-90px) scale(1); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .weather-layer .drop,
+    .weather-layer .flake,
+    .weather-layer .leaf,
+    .weather-layer .sun-glow,
+    .weather-layer .dust,
+    .weather-layer .wave,
+    .weather-layer .bubble {
+      animation: none !important;
+    }
+  }
+  .location-card .loc-grove {
+    font-size: 2.6rem;
+    letter-spacing: 10px;
+    margin-bottom: 6px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  }
+  .location-card h3 {
+    margin: 0 0 16px;
+    font-size: 1.3rem;
+    font-family: 'Baloo 2', cursive;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  }
+  .location-card .loc-row {
+    text-align: left;
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 14px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .location-card .loc-label {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
+  }
+  .location-card .loc-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .location-card .loc-chip {
+    background: rgba(255,255,255,0.92);
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 4px 11px;
+    border-radius: 999px;
+  }
+  .location-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .location-dots { display: flex; gap: 6px; }
+  .location-dots .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d8e8d8;
+    cursor: pointer;
+  }
+  .location-dots .dot.active { background: var(--leaf); }
+
+  /* ---------- Layers diagram ---------- */
+  .layer-diagram {
+    display: flex;
+    flex-direction: column;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 3px solid var(--leaf-light);
+  }
+  .layer {
+    padding: 16px 18px;
+    cursor: pointer;
+    color: #fff;
+    position: relative;
+    transition: flex-grow 0.25s ease, padding 0.25s ease;
+    font-family: 'Baloo 2', cursive;
+  }
+  .layer .layer-title { font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+  .layer .layer-detail {
+    display: none;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    font-size: 0.88rem;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.18);
+    border-radius: 10px;
+    padding: 8px 12px;
+    line-height: 1.5;
+  }
+  .layer.open .layer-detail { display: block; }
+  .layer.canopy { background: linear-gradient(90deg, #2f7d33, #3f9142); }
+  .layer.understorey { background: linear-gradient(90deg, #4a9e4e, #5cb861); }
+  .layer.floor { background: linear-gradient(90deg, #6fbf73, #8fd193); color: #1e3320; }
+  .layer.underground { background: linear-gradient(90deg, var(--soil), #a97b3f); }
+
+  /* ---------- Resource chips ---------- */
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .resource-card {
+    background: linear-gradient(160deg, #fff, #f2f9f1);
+    border: 2px dashed var(--leaf-light);
+    border-radius: 16px;
+    padding: 14px;
+    text-align: center;
+  }
+  .resource-card .emoji { font-size: 1.8rem; }
+  .resource-card h4 { margin: 6px 0 4px; font-size: 0.95rem; font-family: 'Baloo 2', cursive; color: var(--leaf-dark); }
+  .resource-card p { margin: 0; font-size: 0.8rem; line-height: 1.4; }
+
+  /* ---------- Why conserve cause-effect ---------- */
+  .cause-effect {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .ce-card {
+    background: #fff;
+    border-radius: 16px;
+    border-left: 6px solid var(--river);
+    padding: 14px 16px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.05);
+  }
+  .ce-card .step {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--river);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .ce-card p { margin: 4px 0 0; font-size: 0.9rem; line-height: 1.5; }
+
+  /* ---------- Threats accordion ---------- */
+  .accordion-item {
+    border: 2px solid #ffd7b0;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .accordion-header {
+    background: linear-gradient(90deg, #ffb347, #ff8c69);
+    color: #fff;
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+  }
+  .accordion-header .arrow { transition: transform 0.2s ease; }
+  .accordion-item.open .arrow { transform: rotate(180deg); }
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s ease;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  .accordion-body-inner { padding: 12px 16px; }
+  .accordion-item.open .accordion-body { max-height: 300px; }
+
+  .stat-banner {
+    margin-top: 18px;
+    background: linear-gradient(120deg, #2a3b2c, #1c4d29);
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-banner .big-num {
+    font-family: 'Baloo 2', cursive;
+    font-size: clamp(2rem, 8vw, 3rem);
+    color: var(--sun);
+  }
+  .stat-banner p { margin: 4px 0 0; font-size: 0.9rem; }
+
+  /* ---------- Highlight callouts ---------- */
+  .callout {
+    border-radius: 20px;
+    padding: 20px;
+    margin-top: 16px;
+    position: relative;
+  }
+  .callout.chipko {
+    background: linear-gradient(135deg, #fff0e6, #ffe3d1);
+    border: 2px solid #ffb37a;
+  }
+  .callout.vanmahotsav {
+    background: linear-gradient(135deg, #eafaec, #d7f5db);
+    border: 2px solid var(--leaf-light);
+  }
+  .callout h3 { margin: 0 0 8px; font-size: 1.1rem; color: var(--leaf-dark); }
+  .callout p { margin: 0; font-size: 0.92rem; line-height: 1.6; }
+  .callout .tag-emoji { font-size: 1.6rem; margin-bottom: 6px; display: inline-block; }
+
+  /* ---------- Did you know / continent callout ---------- */
+  .callout.didyouknow {
+    background: linear-gradient(135deg, #fff8e1, #ffedb3);
+    border: 2px solid var(--sun);
+  }
+  .continent-order {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+  }
+  .continent-pill {
+    background: #fff;
+    border: 2px solid #f5c400;
+    color: #6b5300;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .continent-pill .rank { opacity: 0.6; margin-right: 4px; }
+
+  /* ---------- Animal chip groups ---------- */
+  .animal-group { margin-top: 16px; }
+  .animal-group h3 {
+    font-size: 1rem;
+    color: var(--leaf-dark);
+    margin: 0 0 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .animal-group .group-note { font-size: 0.82rem; color: #5a6e5c; margin: 0 0 8px; }
+  .animal-chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .animal-chip {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    color: var(--leaf-dark);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 5px 11px;
+    border-radius: 999px;
+  }
+  .animal-chip.special { background: var(--leaf-light); border-color: var(--leaf); }
+  .animal-chip.bird { border-color: var(--sky); color: #1c5faa; }
+  .animal-chip.coastal { border-color: var(--river); color: #0b7d75; }
+
+  /* ---------- Parks explorer ---------- */
+  .park-search {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: 2px solid var(--leaf-light);
+    border-radius: 999px;
+    margin-bottom: 16px;
+    outline: none;
+    box-sizing: border-box;
+  }
+  .park-search:focus { border-color: var(--leaf); }
+  .park-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .park-card {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 6px 0 rgba(63,145,66,0.1);
+  }
+  .park-card h3 {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    color: var(--leaf-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .park-card .park-loc {
+    display: inline-block;
+    background: var(--sky);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+  }
+  .park-card .park-forest {
+    display: inline-block;
+    background: var(--soil);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    margin-left: 4px;
+  }
+  .park-card p { margin: 4px 0 0; font-size: 0.85rem; line-height: 1.45; }
+  .park-empty { text-align: center; color: #8a9c8c; font-weight: 600; padding: 20px; grid-column: 1 / -1; }
+
+  /* ---------- Factfile trading cards ---------- */
+  .factfile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+  .factfile-card {
+    background: linear-gradient(160deg, #fff, #f4faf2);
+    border: 3px solid var(--leaf-light);
+    border-radius: 22px;
+    padding: 18px;
+    text-align: center;
+    box-shadow: 0 10px 0 rgba(63,145,66,0.1);
+  }
+  .factfile-card .ff-emoji {
+    font-size: 3rem;
+    background: #fff;
+    border: 3px solid var(--sun);
+    border-radius: 50%;
+    width: 88px;
+    height: 88px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+  }
+  .factfile-card h3 { margin: 0 0 8px; font-size: 1.05rem; color: var(--leaf-dark); }
+  .factfile-card .ff-row { text-align: left; margin-top: 10px; font-size: 0.85rem; line-height: 1.5; }
+  .factfile-card .ff-row strong { color: var(--leaf-dark); }
+  .ff-diet {
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: #fff;
+  }
+  .ff-diet.carnivorous { background: #e03131; }
+  .ff-diet.herbivorous { background: #2f9e44; }
+  .ff-diet.omnivorous { background: #f08c00; }
+  .ff-fact {
+    margin-top: 10px;
+    background: #fff8e1;
+    border: 1px dashed var(--sun);
+    border-radius: 10px;
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  /* ---------- Glossary flip cards ---------- */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+  }
+  .flip-card {
+    perspective: 1000px;
+    height: 140px;
+    cursor: pointer;
+  }
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.5s;
+    transform-style: preserve-3d;
+  }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: 'Baloo 2', cursive;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+  }
+  .flip-front {
+    background: linear-gradient(135deg, var(--leaf), var(--leaf-dark));
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+  .flip-back {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    color: var(--ink);
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    line-height: 1.4;
+    transform: rotateY(180deg);
+  }
+  .flip-hint { font-size: 0.68rem; color: #eafbe8; margin-top: 4px; font-family: 'Fredoka', sans-serif; font-weight: 600; }
+
+  /* ---------- Now you know ---------- */
+  .summary-list { margin: 0; padding-left: 22px; }
+  .summary-list li { margin-bottom: 10px; line-height: 1.6; font-size: 0.95rem; }
+  .summary-list li strong { color: var(--leaf-dark); }
+
+  /* ---------- Quiz hub ---------- */
+  .quiz-hub-intro {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #5a6e5c;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .quiz-hub-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+  }
+  .quiz-hub-card {
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    border-radius: 18px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 0 rgba(63,145,66,0.12);
+    transition: transform 0.15s ease;
+  }
+  .quiz-hub-card:hover { transform: translateY(-3px); border-color: var(--leaf); }
+  .quiz-hub-card .qh-icon { font-size: 1.9rem; }
+  .quiz-hub-card h3 {
+    margin: 8px 0 2px;
+    font-size: 0.88rem;
+    color: var(--leaf-dark);
+  }
+  .quiz-hub-card .qh-title { font-size: 0.78rem; font-weight: 600; color: var(--ink); min-height: 32px; }
+  .quiz-hub-card .qh-count { font-size: 0.72rem; color: #7a8c7c; font-weight: 600; margin-top: 4px; }
+  .quiz-hub-card .qh-best {
+    margin-top: 8px;
+    display: inline-block;
+    background: var(--leaf-light);
+    color: var(--leaf-dark);
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .quiz-back-btn {
+    background: none;
+    border: none;
+    color: var(--leaf-dark);
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-bottom: 14px;
+    padding: 0;
+  }
+  .quiz-result-nav { display: flex; gap: 10px; justify-content: center; margin-top: 10px; flex-wrap: wrap; }
+  .quiz-btn.hub-btn { background: linear-gradient(135deg, var(--leaf), var(--leaf-dark)); }
+
+  /* ---------- Quiz ---------- */
+  #quiz-panel { position: relative; }
+  .quiz-progress {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    color: var(--leaf-dark);
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+  }
+  .quiz-question {
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-family: 'Baloo 2', cursive;
+    margin-bottom: 14px;
+    color: var(--ink);
+  }
+  .quiz-options { display: grid; gap: 10px; }
+  .quiz-opt {
+    text-align: left;
+    background: #fff;
+    border: 2px solid var(--leaf-light);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .quiz-opt:hover { background: #f0f9ee; }
+  .quiz-opt.correct { background: #d7f5db; border-color: var(--leaf); }
+  .quiz-opt.wrong { background: #ffe0e0; border-color: var(--berry); }
+  .quiz-opt:disabled { cursor: default; }
+  .quiz-feedback { margin-top: 12px; font-weight: 700; font-family: 'Baloo 2', cursive; min-height: 24px; }
+  .quiz-nav { margin-top: 16px; display: flex; gap: 10px; justify-content: flex-end; }
+  .quiz-btn {
+    font-family: 'Baloo 2', cursive;
+    font-weight: 700;
+    border: none;
+    border-radius: 999px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(135deg, var(--sky), #6bb0ff);
+    box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+  }
+  .quiz-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .quiz-result {
+    text-align: center;
+    padding: 20px;
+  }
+  .quiz-result .score-num {
+    font-family: 'Baloo 2', cursive;
+    font-size: 2.6rem;
+    color: var(--leaf-dark);
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 50px;
+    color: #6b8c6f;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .more-coming {
+    text-align: center;
+    margin-top: 40px;
+    background: #fff7e0;
+    border: 2px dashed var(--sun);
+    border-radius: 18px;
+    padding: 16px;
+    font-weight: 600;
+    color: #8a6d00;
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="unit-tag">UNIT 2 · SOCIAL STUDIES</span>
+  <h1>🌳 Forests and Wildlife</h1>
+  <p class="tagline">Dishika's interactive explorer — tap, flip and quiz your way through India's forests!</p>
+  <div class="emoji-row">🌲🦜🐒🌿🐾</div>
+</header>
+
+<nav class="tabs" id="tabnav">
+  <a href="#intro-types">🌳 Intro &amp; Types</a>
+  <a href="#where">🗺️ Where</a>
+  <a href="#role">🐿️ Role &amp; Uses</a>
+  <a href="#conserve">🛡️ Conserve</a>
+  <a href="#subcontinent">🌏 Subcontinent</a>
+  <a href="#parks">🏞️ Parks</a>
+  <a href="#factfile">🐯 Factfile</a>
+  <a href="#wildlife-conservation">🦏 Wildlife Conservation</a>
+  <a href="#recap">📝 Recap</a>
+  <a href="#glossary">📖 Glossary</a>
+  <a href="#quiz">🎯 Quiz</a>
+</nav>
+
+<main>
+
+  <!-- INTRO + FOREST TYPES (merged banner, side by side content) -->
+  <section id="intro-types">
+    <div class="section-head">
+      <div class="icon-badge">🌳</div>
+      <h2><span class="eyebrow">Getting started</span>Forest Intro and Types</h2>
+    </div>
+    <div class="parallel-grid">
+      <div class="panel-col intro-col">
+        <h3 class="col-label">🌱 What is a Forest?</h3>
+        <div class="panel">
+          <p class="lead"><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. The kind of trees and plants that grow in a forest depend on the <strong>climate</strong> and <strong>soil</strong> of the place.</p>
+          <div class="fact-grid">
+            <div class="fact-card">
+              <h3>🌿 Natural Vegetation</h3>
+              <p>Forests grow naturally in a region — that's why they are called <strong>natural vegetation</strong>.</p>
+            </div>
+            <div class="fact-card">
+              <h3>🏡 Natural Habitat</h3>
+              <p>Forests provide shelter to many wild animals — that's why they are called the <strong>natural habitat of the animals</strong>.</p>
+            </div>
+          </div>
+          <p class="lead" style="margin-top:16px;">India has a great diversity of natural ecosystems, and our forests can be divided into <strong>five main groups</strong>. Explore each one alongside!</p>
+        </div>
+      </div>
+
+      <div class="panel-col types-col">
+        <h3 class="col-label">🌳 Explore the 5 Types</h3>
+        <div class="panel">
+          <div class="forest-tabs" id="forest-tabs"></div>
+          <div class="forest-detail" id="forest-detail"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHERE -->
+  <section id="where">
+    <div class="section-head">
+      <div class="icon-badge">🗺️</div>
+      <h2><span class="eyebrow">Locate</span>Where Do Forests Grow in India?</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Tap a forest type below — or use the arrows — to see where it grows, one at a time!</p>
+      <div class="forest-tabs" id="location-tabs"></div>
+      <div class="location-card" id="location-card"></div>
+      <div class="location-nav">
+        <button class="quiz-btn" id="loc-prev">⬅ Prev</button>
+        <div class="location-dots" id="location-dots"></div>
+        <button class="quiz-btn" id="loc-next">Next ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROLE AND USES -->
+  <section id="role">
+    <div class="section-head">
+      <div class="icon-badge">🐿️</div>
+      <h2><span class="eyebrow">Discover</span>Role &amp; Uses of Forests</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Like soil and minerals, forests are also an important <strong>natural resource</strong>. They provide natural habitat — food, water and shelter — to a large number of living things.</p>
+
+      <h3 style="color:var(--leaf-dark); margin-bottom:6px;">🏢 Tap a layer of the forest</h3>
+      <p style="font-size:0.85rem; margin-top:0; color:#5a6e5c;">Every layer of the forest is home to different animals.</p>
+      <div class="layer-diagram" id="layer-diagram"></div>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 6px;">🍽️ Every Part of a Tree is Food for Someone</h3>
+      <p class="lead">Birds eat fruits and seeds, deer eat leaves, squirrels eat nuts, some insects eat roots, some drink sap, and many animals eat green leaves. Some forest animals also feed upon other smaller and weaker animals.</p>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 6px;">🧑‍🤝‍🧑 Homes for Tribal Communities</h3>
+      <p class="lead">Many tribal communities have been living in forests since ancient times. They depend on the forests for food, shelter and medicines.</p>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 10px;">🪵 Useful Resources from Forests</h3>
+      <div class="resource-grid" id="resource-grid"></div>
+      <p style="font-size:0.8rem; color:#5a6e5c; margin-top:12px;">*Rubber is also grown as a plantation crop.</p>
+    </div>
+  </section>
+
+  <!-- CONSERVE -->
+  <section id="conserve">
+    <div class="section-head">
+      <div class="icon-badge">🛡️</div>
+      <h2><span class="eyebrow">Protect</span>Why We Need to Conserve Forests</h2>
+    </div>
+    <div class="panel">
+      <div class="cause-effect" id="cause-effect"></div>
+
+      <h3 style="color:var(--e8590c); color:#c1440e; margin:26px 0 6px;">⚠️ Threats to Our Forests — tap to open</h3>
+      <div id="threats-accordion"></div>
+
+      <div class="stat-banner">
+        <div class="big-num">24.62%</div>
+        <p>A recent study by the Forest Survey of India states that forests cover only 24.62 percent of the land area in India.</p>
+      </div>
+
+      <div class="callout chipko">
+        <span class="tag-emoji">🤗</span>
+        <h3>The Chipko Movement</h3>
+        <p>The word <strong>'Chipko'</strong>, literally in Hindi, means "to hug." It was a movement of the peasants in the <strong>Uttarakhand</strong> region of India to prevent the felling of trees by wood contractors. It was strengthened by <strong>Sunder Lal Bahuguna</strong>, and the movement spread to other parts of the Himalayas.</p>
+      </div>
+
+      <div class="callout vanmahotsav">
+        <span class="tag-emoji">🌳</span>
+        <h3>Van Mahotsav — Conservation of Our Forest Wealth</h3>
+        <p>A festival called <strong>Van Mahotsav</strong> is celebrated every year throughout India in the <strong>first week of July</strong> to encourage people to plant trees and get involved with conservation and protection of nature. Each one of us must take this opportunity to restore the greenery in our surroundings, instead of cutting it down.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBCONTINENT -->
+  <section id="subcontinent">
+    <div class="section-head">
+      <div class="icon-badge">🌏</div>
+      <h2><span class="eyebrow">Explore</span>Wildlife of the Indian Subcontinent</h2>
+    </div>
+    <div class="panel">
+      <div class="callout didyouknow">
+        <span class="tag-emoji">💡</span>
+        <h3>Did You Know?</h3>
+        <p>A <strong>continent</strong> is one of several large landmasses on Earth. There are seven regions commonly regarded as continents. The continents known to us are, from largest in size to smallest:</p>
+        <div class="continent-order" id="continent-order"></div>
+        <p>Long ago, when the continents began to move to reach their current positions, our country India — along with a few neighbouring countries — was a part of the huge Asian continent, and was called the <strong>Indian Subcontinent</strong> (namely India, Pakistan, Bangladesh, Nepal, Bhutan, and the island countries of Sri Lanka and Maldives).</p>
+      </div>
+
+      <p class="lead" style="margin-top:18px;">The wildlife found in the countries forming the Subcontinent are very similar, with just a few exceptions.</p>
+
+      <div class="animal-group">
+        <h3>🐘 Animal Life of the Subcontinent</h3>
+        <div class="animal-chip-row" id="mammal-chips"></div>
+      </div>
+
+      <div class="animal-group">
+        <h3>🐆 High-Altitude Specials</h3>
+        <p class="group-note">Due to the high altitudes in places like Nepal and Bhutan, these are found:</p>
+        <div class="animal-chip-row" id="altitude-chips"></div>
+      </div>
+
+      <div class="animal-group">
+        <h3>🐬 Coastal &amp; Island Specials</h3>
+        <p class="group-note">In Bangladesh and the island countries of Sri Lanka and Maldives, due to the proximity of the ocean, these are found:</p>
+        <div class="animal-chip-row" id="coastal-chips"></div>
+      </div>
+
+      <div class="animal-group">
+        <h3>🦜 Birds of the Subcontinent</h3>
+        <div class="animal-chip-row" id="bird-chips"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARKS -->
+  <section id="parks">
+    <div class="section-head">
+      <div class="icon-badge">🏞️</div>
+      <h2><span class="eyebrow">Discover</span>National Parks &amp; Wildlife Sanctuaries</h2>
+    </div>
+    <div class="panel">
+      <div class="fact-grid">
+        <div class="fact-card">
+          <h3>🏞️ National Park</h3>
+          <p>A protected area to conserve the natural environment and the wildlife in it, and also provide recreation (an area of environmental importance or natural beauty protected by the state which the public may visit). Killing, hunting, shooting or capturing of any species of bird or animal is <strong>not allowed</strong>.</p>
+        </div>
+        <div class="fact-card">
+          <h3>🦌 Wildlife Sanctuary</h3>
+          <p>A protected area, usually in natural condition, through the management of human activities to provide and maintain the habitat of wild animals and the habitats that support them. Killing, hunting, shooting or capturing of any species of bird or animal is <strong>not allowed</strong>.</p>
+        </div>
+      </div>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 10px;">🔍 Explore Important National Parks &amp; Sanctuaries in India</h3>
+      <input type="text" class="park-search" id="park-search" placeholder="🔍 Search by park name, animal or state...">
+      <div class="park-grid" id="park-grid"></div>
+    </div>
+  </section>
+
+  <!-- FACTFILE -->
+  <section id="factfile">
+    <div class="section-head">
+      <div class="icon-badge">🐯</div>
+      <h2><span class="eyebrow">Meet the animals</span>A Factfile of Wildlife Found in India</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Here is a list of selected animals that you have already learnt about in class.</p>
+      <div class="factfile-grid" id="factfile-grid"></div>
+
+      <div class="callout didyouknow" style="margin-top:22px;">
+        <span class="tag-emoji">☠️</span>
+        <h3>Toxin, Poison or Venom?</h3>
+        <p><strong>A toxin</strong> is any substance that can cause harm.<br>
+        <strong>A poison</strong> is a toxin that causes its effect through ingestion or absorption — it could be anything in excess, be it food, water, etc.<br>
+        <strong>A venom</strong> is a toxin that causes its effect through contact with the blood stream. Its administration is via a specialized introductory/delivery system — it is a liquid substance that needs to be injected or get in touch with the bloodstream in order to cause serious discomfort, and can eventually be fatal (lead to death).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WILDLIFE CONSERVATION -->
+  <section id="wildlife-conservation">
+    <div class="section-head">
+      <div class="icon-badge">🦏</div>
+      <h2><span class="eyebrow">Protect</span>Need for Conservation</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Due to habitat destruction and various other reasons, our diverse wildlife is under constant threat. Some of them are on the verge of extinction — i.e. they are becoming <strong>extinct</strong> — and many others are <strong>endangered</strong>, i.e. they are under threat of existence but with conservation can be saved, as compared to the ones that are severely endangered.</p>
+
+      <h3 style="color:var(--leaf-dark); margin:20px 0 10px;">🎯 Poached for Their Body Parts</h3>
+      <p class="group-note" style="margin-bottom:10px;">Certain wild animals are poached/hunted for:</p>
+      <div class="resource-grid" id="poach-grid"></div>
+
+      <div class="callout didyouknow" style="margin-top:18px;">
+        <span class="tag-emoji">💡</span>
+        <h3>Did You Know?</h3>
+        <p>The tusks of elephants are actually their <strong>incisors</strong>.</p>
+      </div>
+
+      <h3 style="color:var(--leaf-dark); margin:26px 0 6px;">🏘️ Loss of Habitat &amp; Man–Animal Conflict</h3>
+      <div class="cause-effect" id="man-animal-conflict"></div>
+
+      <div class="callout vanmahotsav" style="margin-top:20px;">
+        <span class="tag-emoji">🏞️</span>
+        <h3>Protected Areas</h3>
+        <p>Hence, the government has declared several areas as protected areas — called <strong>National Parks</strong> and <strong>Wildlife Sanctuaries</strong>. Having learnt about the forests and wildlife in our country, we must understand that with its beauty and benefits comes the responsibility to conserve it for our future generations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECAP -->
+  <section id="recap">
+    <div class="section-head">
+      <div class="icon-badge">📝</div>
+      <h2><span class="eyebrow">Wrap up</span>Chapter Recap</h2>
+    </div>
+    <div class="panel">
+      <h3 style="color:var(--leaf-dark); margin:0 0 10px;">🌟 Let's Recall</h3>
+      <ul class="summary-list">
+        <li><strong>Forests</strong> are large areas of land covered mainly with trees and other small plants. They are called the <strong>natural habitat</strong> of the animals.</li>
+        <li>Our forests can be divided into <strong>five main groups</strong> — Evergreen forests, Deciduous forests, Thorn forests, Mountain or Coniferous forests, and Marshy or tidal forests.</li>
+        <li>The wildlife found in the countries forming the <strong>Sub-continent</strong> (namely India, Pakistan, Bangladesh, Nepal, Bhutan, and the island countries of Sri Lanka and Maldives) are very similar.</li>
+        <li><strong>Loss of habitat</strong> is the prime reason for the decrease in the number of wild animals. Hence, the government has declared several areas as protected areas — <strong>National Parks</strong> and <strong>Wildlife Sanctuaries</strong>.</li>
+      </ul>
+
+      <h3 style="color:var(--leaf-dark); margin:22px 0 10px;">🌱 Now You Know...</h3>
+      <ul class="summary-list">
+        <li>Earth's natural resources are very important for the survival of all living beings. Forests are a <strong>renewable but exhaustible</strong> natural resource.</li>
+        <li>If forests are used up and not replaced for a long period of time, the forest cover will disappear.</li>
+        <li>Forests are one of the most valuable natural resources, which have taken millions of years to grow. But these resources are being used faster than they can be replenished by nature.</li>
+        <li>Man should make <strong>judicious (wise) use</strong> of natural resources.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- GLOSSARY -->
+  <section id="glossary">
+    <div class="section-head">
+      <div class="icon-badge">📖</div>
+      <h2><span class="eyebrow">Tap to flip</span>Word Bank / Glossary</h2>
+    </div>
+    <div class="panel">
+      <p class="lead">Tap a card to reveal its meaning!</p>
+      <div class="glossary-grid" id="glossary-grid"></div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz">
+    <div class="section-head">
+      <div class="icon-badge">🎯</div>
+      <h2><span class="eyebrow">Test yourself</span>Forest Quiz</h2>
+    </div>
+    <div class="panel" id="quiz-panel"></div>
+  </section>
+
+  <div class="more-coming">🎉 That's the whole chapter, Dishika — great job making it to the end! Head to the Quiz to test yourself. 🎉</div>
+
+  <footer>Made with 🌿 for Dishika's Social Studies revision · Unit 2: Forests and Wildlife</footer>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------- DATA ----------------
+  var forestTypes = [
+    {
+      key: "evergreen",
+      name: "Evergreen Forests",
+      emoji: "🌴",
+      color: "linear-gradient(135deg,#2f9e44,#40c057)",
+      weather: "rain",
+      facts: [
+        "Found in areas which receive heavy rainfall.",
+        "Trees in these forests remain green throughout the year.",
+        "New leaves grow before the old ones are shed."
+      ],
+      trees: ["Rosewood", "Ebony", "Mango", "Neem", "Mahogany"],
+      where: "Western Ghats and north-eastern states like Assam, Arunachal Pradesh, Meghalaya and Tripura"
+    },
+    {
+      key: "deciduous",
+      name: "Deciduous Forests",
+      emoji: "🍂",
+      color: "linear-gradient(135deg,#e8590c,#f08c00)",
+      weather: "leaves",
+      facts: [
+        "Trees of these forests shed their leaves — that's why they are also called monsoon forests.",
+        "They are found in warmer areas of the Southern Plateau (Andhra Pradesh) and in the foothills of the Himalayas.",
+        "Also found in Bihar and Odisha."
+      ],
+      trees: ["Teak", "Sal", "Sheesham"],
+      where: "Southern Plateau, foothills of the Himalayas, Bihar and Odisha"
+    },
+    {
+      key: "thorn",
+      name: "Thorn Forests",
+      emoji: "🌵",
+      color: "linear-gradient(135deg,#d9480f,#f76707)",
+      weather: "sun",
+      facts: [
+        "Found in areas with very little rainfall.",
+        "Trees and shrubs are short and thorny."
+      ],
+      trees: ["Keekar", "Babool", "Date palms", "Thorny shrubs"],
+      where: "Rajasthan and some parts of the Deccan Plateau (parts of Madhya Pradesh and Uttar Pradesh)"
+    },
+    {
+      key: "coniferous",
+      name: "Mountain / Coniferous Forests",
+      emoji: "🌲",
+      color: "linear-gradient(135deg,#1971c2,#4dabf7)",
+      weather: "snow",
+      facts: [
+        "Found in places that are cold most of the time.",
+        "Trees mostly have tall and cone-shaped trunks with needle-shaped leaves.",
+        "Found mostly in the Himalayan region."
+      ],
+      trees: ["Fir", "Pine", "Cedar (Deodar)", "Oak"],
+      where: "Himalayan region, Jammu and Kashmir"
+    },
+    {
+      key: "marshy",
+      name: "Marshy / Tidal Forests",
+      emoji: "🌊",
+      color: "linear-gradient(135deg,#b98d5a,#d9bf94)",
+      weather: "mud",
+      facts: [
+        "Found in the deltas of rivers such as the Ganga, Mahanadi and Godavari.",
+        "The Ganga delta marshy forests are known as the Sundarbans.",
+        "Mangrove trees grow in these forests after the sundri trees that grow there.",
+        "Mangrove trees have breathing roots which help them survive in the clayey soil of this region."
+      ],
+      trees: ["Mangroves (Sundri)"],
+      where: "West Bengal, Andhra Pradesh and Odisha"
+    }
+  ];
+
+  // Mirrors the textbook's "Location of forests in India" table exactly (separate from the
+  // richer descriptions above, which are used only in the Forest Type Explorer cards).
+  var locationTable = [
+    { key: "evergreen", places: "In areas of heavy rainfall.", states: "Assam, Arunachal Pradesh, Meghalaya and Tripura.", examples: "Rosewood, Ebony, Mango, Neem, Mahogany, etc." },
+    { key: "deciduous", places: "In warmer areas.", states: "Andhra Pradesh, Bihar, Odisha and foothills of the Himalayas and areas of the Southern Plateau.", examples: "Teak, Sal, Shesham, etc." },
+    { key: "thorn", places: "In areas of very little rainfall.", states: "Rajasthan, parts of Madhya Pradesh and Uttar Pradesh.", examples: "Babool, Keekar, Date palms, etc." },
+    { key: "coniferous", places: "In cold regions.", states: "Jammu and Kashmir", examples: "Fir, Pine, Cedar, etc." },
+    { key: "marshy", places: "In deltas of rivers which have clayey soil.", states: "West Bengal, Andhra Pradesh and Odisha.", examples: "Mangroves (sundri trees in Sundarbans)" }
+  ];
+
+  var layers = [
+    { key: "canopy", title: "🌳 Canopy (Leafy Treetops)", detail: "Some birds and insects live high up in the leafy treetops, called the canopy, sheltering a large number of living things." },
+    { key: "understorey", title: "🐆 Understorey (Middle Layer)", detail: "Climbers live lower down. This middle layer is called the understorey. Panther and other wild cats, like the leopard, are excellent tree climbers and live here." },
+    { key: "floor", title: "🦌 Forest Floor", detail: "Some animals live on the forest floor — like deer, frogs, snakes, etc." },
+    { key: "underground", title: "🐭 Underground", detail: "Others live underground, like mice, mongoose, etc." }
+  ];
+
+  var resources = [
+    { emoji: "🪵", name: "Timber", desc: "Used for building houses and furniture." },
+    { emoji: "🔥", name: "Firewood", desc: "Used by villagers as fuel for cooking." },
+    { emoji: "📄", name: "Wood Pulp", desc: "Used to make paper." },
+    { emoji: "🎨", name: "Rubber, Gum, Cork, Resins", desc: "Used to make paint and many medicinal products." },
+    { emoji: "🌾", name: "Food Crops", desc: "Obtained from plants like tulsi and trees like neem." },
+    { emoji: "🍌", name: "Fruits", desc: "Banana, mango, lemons, pineapples, oranges, tomatoes and more originated as wild plants in forests." },
+    { emoji: "🌽", name: "Grains & Vegetables", desc: "Wheat, rice, coconut, coffee, maize, potato, etc." }
+  ];
+
+  var causeEffect = [
+    { step: "Step 1", text: "Trees release oxygen into the air during photosynthesis." },
+    { step: "Step 2", text: "Trees cause rainfall by cooling the air and releasing water vapour into it through transpiration." },
+    { step: "Step 3", text: "Forests help hold soil particles firmly, so soil can absorb rain water — this increases the level of the water table below." },
+    { step: "Step 4", text: "If forests are not present, soil gets eroded by running water and cannot percolate into the ground. Forests prevent soil erosion and control floods." }
+  ];
+
+  var threats = [
+    { title: "🏘️ Clearing for Agriculture & Settlement", body: "Due to the increasing population, many forests are being cleared for agriculture and human settlement. Cutting trees to clear forests is called deforestation. This increases the chances of landslides and floods due to soil erosion." },
+    { title: "🐘 Loss of Animal Habitat", body: "Deforestation leads to a reduction in animal population because their natural habitat is reduced. If there aren't enough forests, there won't be enough food for the animals, so they come out in search of food and are forced to kill livestock. Humans, in turn, kill them to protect their domestic animals. Many animals are becoming extinct (wiped out) and many more are endangered." },
+    { title: "🐄 Overgrazing", body: "Due to the lack of availability of fodder for cattle, rural people use forest areas as grazing grounds. These animals destroy small plants by eating them, preventing them from growing into big trees." },
+    { title: "🔥 Forest Fires", body: "Sometimes people leave burning cigarettes and open fires in the forests. The dry twigs and branches immediately catch fire, and it spreads and engulfs the entire forest — destroying many trees, plants and killing many animals and birds." }
+  ];
+
+  var continents = ["Asia", "Africa", "North America", "South America", "Antarctica", "Europe", "Australia"];
+
+  var subcontinentMammals = [
+    "Asiatic elephants", "Chinkaras (Indian gazelle)", "Spotted deer", "Jackals", "Sloth bears",
+    "Royal Bengal tigers", "Camels", "Wild goats (mountain goat)", "Sambars (Indian stag)", "Gorals",
+    "Asiatic wild asses", "Wild buffaloes (gaur)", "Hog deer (para)", "Asiatic wild dogs (dholes)",
+    "Striped hyenas", "Wolves", "Monkeys", "Gharials", "Crocodilians", "Snakes", "Lizards", "Bats", "Frogs"
+  ];
+
+  var altitudeSpecials = ["Snow leopards", "Red pandas", "Musk deer", "Marco Polo sheep"];
+
+  var coastalSpecials = ["Turtles", "Whales", "Dolphins", "Tropical fish"];
+
+  var subcontinentBirds = [
+    "Parakeets", "Peafowls", "Warblers", "Kingfishers", "Partridges", "Robins", "Bulbuls",
+    "Grey-headed fishing eagles", "Black-shouldered kites", "Quails", "Black kites (pariah kites)",
+    "Cuckoos", "White-tailed eagles", "Owls", "Himalayan griffons", "Geese", "Ducks", "Flamingoes",
+    "Pelicans", "Spoon bills", "Storks", "Plovers", "Curlews", "Sand pipers", "Snipes", "Herons"
+  ];
+
+  var parksData = [
+    { name: "Corbett National Park", emoji: "🐘", animals: "Asiatic elephants, Tigers, Leopards and Crocodiles", location: "Uttarakhand", forest: "Deciduous" },
+    { name: "Kaziranga National Park", emoji: "🦏", animals: "Rhinos, Tigers and Leopards", location: "Assam", forest: "Swamps and grasslands" },
+    { name: "Sundarbans Tiger Reserve", emoji: "🐅", animals: "Bengal Tigers, Olive Ridley Sea Turtles", location: "West Bengal", forest: "Marshy/tidal" },
+    { name: "Gir Wildlife Sanctuary", emoji: "🦁", animals: "Asiatic Lions and Leopards", location: "Gujarat", forest: "Mixed deciduous" },
+    { name: "Kanha National Park", emoji: "🐆", animals: "Tigers, Leopards and sloth bears", location: "Madhya Pradesh", forest: "Bamboo and sal" },
+    { name: "Bandipur National Park", emoji: "🐘", animals: "Asiatic elephants and gaurs", location: "Karnataka", forest: "Dry and mixed deciduous" },
+    { name: "Periyar Wildlife Sanctuary and National Park", emoji: "🐯", animals: "Asiatic elephants, Tigers, Nilgiri Langurs and Nilgiri Tahrs", location: "Western Ghats of Kerala", forest: "Evergreen" },
+    { name: "Chilka Lake Wildlife Park", emoji: "🦩", animals: "Pink-coloured flamingoes, grey-lag geese, Siberian cranes and white-bellied sea eagles", location: "Odisha", forest: "Largest salt and freshwater lake in Asia" },
+    { name: "Bharatpur Bird Sanctuary", emoji: "🐦", animals: "Sambar, Chital, Nilgai, wild boars, Painted Storks, egrets, cormorants, jacanas, harriers, fishing eagles", location: "Rajasthan", forest: "Dry deciduous forests and extensive grasslands" },
+    { name: "Ranthambore National Park", emoji: "🐅", animals: "Tigers, Leopards and wild boars", location: "Rajasthan", forest: "Dry deciduous and thorny" }
+  ];
+
+  var factfileAnimals = [
+    {
+      name: "The Royal Bengal Tiger",
+      emoji: "🐯",
+      features: "The Royal Bengal Tiger is the largest member of the cat family. It is the national animal of India and a powerful predator.",
+      habitat: "You find them in dense jungles with thick grasslands and undergrowth in which they can camouflage and stalk or wait for their prey.",
+      food: "Carnivorous",
+      diet: "carnivorous"
+    },
+    {
+      name: "BlackBuck Antelope (Kala Hiran)",
+      emoji: "🦌",
+      features: "It has ringed horns. It is one of the fastest running animals on earth.",
+      habitat: "Lives in open plains in herds where it can move fast.",
+      food: "Herbivorous",
+      diet: "herbivorous"
+    },
+    {
+      name: "The Asiatic Elephant",
+      emoji: "🐘",
+      features: "The Asiatic Elephant is the largest mammal in India, but it is smaller compared to the African Elephant.",
+      habitat: "Found across the whole of the country.",
+      food: "Herbivorous",
+      diet: "herbivorous"
+    },
+    {
+      name: "The Asiatic Lion",
+      emoji: "🦁",
+      features: "It has a majestic mane and a big tail tuft. The lionesses are the ones who mostly go hunting and they generally hunt in pride. The male lion spends most of the day sleeping — on average, 20 hours a day. It eats animals like Sambar, Chital, Nilgai, Wild Boar (pig), and occasionally goats and camels.",
+      habitat: "Gir Wildlife Sanctuary is the only remaining refuge for this majestic animal.",
+      food: "Carnivorous",
+      diet: "carnivorous"
+    },
+    {
+      name: "Sarus Crane",
+      emoji: "🦢",
+      features: "These birds are usually seen in small groups of 2-5 and they forage (look for food) while walking in shallow water or in fields, sometimes pecking with their long beaks. Unlike many cranes which make long migrations, the Sarus Cranes do not. On average the male is larger than the female; males can attain a maximum height of approximately 6.6 ft, with a wingspan measured up to 8.5 ft from tip to tip. The average weight is 7.3 kg.",
+      habitat: "Found in northern and central India.",
+      food: "Omnivorous",
+      diet: "omnivorous",
+      funFact: "💡 Did you know? Sarus Cranes are the world's tallest living flying bird."
+    },
+    {
+      name: "Leopard",
+      emoji: "🐆",
+      features: "They are one of the members in the cat family. They are graceful and stealthy, accomplished stalkers, agile climbers. Have sharp eyesight and hearing.",
+      habitat: "They can be found in densely forested areas including National Parks and Wildlife sanctuaries.",
+      food: "Carnivorous",
+      diet: "carnivorous"
+    },
+    {
+      name: "Indian Spectacled Cobra",
+      emoji: "🐍",
+      features: "It is a *venomous snake that can spit venom to a distance of 2 meters. If this venom enters the eyes of any human beings/animals, it can cause severe pain and permanent loss of eyesight.",
+      habitat: "Rain forests, rice fields and cultivated land.",
+      food: "Carnivorous — swallows its food whole",
+      diet: "carnivorous"
+    },
+    {
+      name: "Asiatic One-Horned Rhinoceros",
+      emoji: "🦏",
+      features: "The one horned rhinoceros is found only in India and weighs around 2000 kg.",
+      habitat: "Marshy and swampy areas of north-eastern India.",
+      food: "Herbivorous",
+      diet: "herbivorous",
+      funFact: "💡 Did you know? Rhinos found in Asia have just one horn — those found in Africa have two horns."
+    },
+    {
+      name: "Peacock",
+      emoji: "🦚",
+      features: "It is the national bird of India. The male bird is brightly coloured with a magnificent tail of feathers.",
+      habitat: "Open forests and its undergrowth. It also prefers stream-side forests, Deciduous forests and other cultivated areas.",
+      food: "Eats grains, insects, small mammals, reptiles, small figs and some cultivated crops",
+      diet: "omnivorous"
+    }
+  ];
+
+  var poachedFor = [
+    { emoji: "🐅", name: "Skin", desc: "Poached from tigers — a chief source of income." },
+    { emoji: "🦏", name: "Horns", desc: "Poached from rhinoceroses." },
+    { emoji: "🐘", name: "Tusks", desc: "Poached from elephants — to make ivory products." },
+    { emoji: "🐐", name: "Hide (Hair)", desc: "Poached from the Tibetan Antelope (Chiru) to make shahtoosh shawls." }
+  ];
+
+  var glossary = [
+    { term: "Natural Vegetation", def: "Plants that grow naturally in a region, without being planted by people." },
+    { term: "Natural Habitat", def: "The natural home of an animal — forests shelter and provide for wild animals." },
+    { term: "Monsoon Forests", def: "Another name for deciduous forests, because their trees shed leaves." },
+    { term: "Water Table", def: "The level below the ground which is completely saturated/filled with water. Also called the water level." },
+    { term: "Percolate", def: "To cause a liquid to pass through / seep or drain through a porous substance or small holes / filter." },
+    { term: "Transpiration", def: "The process of loss of water from a plant into the air, through tiny openings called stomata on the underside of a leaf." },
+    { term: "Deforestation", def: "The cutting of trees to clear forests." },
+    { term: "Extinct", def: "When animals are wiped out completely and no longer exist." },
+    { term: "Endangered", def: "Animals that are at risk of becoming extinct." },
+    { term: "Chipko Movement", def: "'Chipko' means 'to hug' in Hindi. A movement by Uttarakhand peasants to stop tree felling by wood contractors, strengthened by Sunder Lal Bahuguna." },
+    { term: "Van Mahotsav", def: "A festival celebrated in the first week of July across India to encourage people to plant trees." },
+    { term: "Judicious Use", def: "Using natural resources wisely, so they are not wasted or overused." },
+    { term: "Continent", def: "One of several large landmasses on Earth. There are seven regions commonly regarded as continents." },
+    { term: "Indian Subcontinent", def: "India, Pakistan, Bangladesh, Nepal, Bhutan, and the island countries of Sri Lanka and Maldives — once part of the huge Asian continent." },
+    { term: "National Park", def: "A protected area to conserve the natural environment and wildlife, and also provide recreation. Hunting is not allowed." },
+    { term: "Wildlife Sanctuary", def: "A protected area, usually in natural condition, managed to provide and maintain the habitat of wild animals. Hunting is not allowed." },
+    { term: "Toxin", def: "Any substance that can cause harm." },
+    { term: "Poison", def: "A toxin that causes its effect through ingestion or absorption — it could be anything in excess, be it food, water, etc." },
+    { term: "Venom", def: "A toxin that causes its effect through contact with the blood stream, via a specialized delivery system — it needs to be injected or get in touch with the bloodstream." },
+    { term: "Man–Animal Conflict", def: "When wild animals, forced out of shrinking forests in search of food, damage crops or attack livestock, and farmers kill the animals to protect their livestock." }
+  ];
+
+  var quizData = [
+    { q: "Why are forests called 'natural vegetation'?", options: ["They are planted by farmers", "They grow naturally in the region", "They are found only near rivers", "They never change with seasons"], answer: 1 },
+    { q: "Why are forests called the 'natural habitat' of animals?", options: ["They provide shelter to wild animals", "They are the coldest places on Earth", "They only grow near oceans", "They have no plants at all"], answer: 0 },
+    { q: "Which type of forest is found in areas of heavy rainfall and stays green all year?", options: ["Thorn forests", "Coniferous forests", "Evergreen forests", "Marshy forests"], answer: 2 },
+    { q: "Teak, Sal and Sheesham are examples of trees found in which forests?", options: ["Deciduous forests", "Coniferous forests", "Thorn forests", "Evergreen forests"], answer: 0 },
+    { q: "Deciduous forests are also known as ___ forests.", options: ["Desert", "Monsoon", "Polar", "Tidal"], answer: 1 },
+    { q: "Thorn forests, with short thorny trees like keekar and babool, are mostly found in which state?", options: ["Kerala", "Rajasthan", "Assam", "West Bengal"], answer: 1 },
+    { q: "Which forests have tall, cone-shaped trees with needle-shaped leaves, found in cold places like the Himalayan region?", options: ["Marshy forests", "Deciduous forests", "Mountain / Coniferous forests", "Thorn forests"], answer: 2 },
+    { q: "The marshy forests in the Ganga delta are known as the:", options: ["Western Ghats", "Deccan Plateau", "Sundarbans", "Aravallis"], answer: 2 },
+    { q: "What helps mangrove trees survive in the clayey soil of tidal forests?", options: ["Their needle-shaped leaves", "Their breathing roots", "Their thorny branches", "Their bright flowers"], answer: 1 },
+    { q: "In the forest, which layer do panthers and leopards mostly live in as excellent tree climbers?", options: ["Canopy", "Understorey", "Forest floor", "Underground"], answer: 1 },
+    { q: "What is the process called when trees release water vapour into the air?", options: ["Percolation", "Photosynthesis", "Transpiration", "Deforestation"], answer: 2 },
+    { q: "The level below the ground that is completely saturated with water is called the:", options: ["Water table", "Forest floor", "Canopy", "Delta"], answer: 0 },
+    { q: "What is the cutting down of forests called?", options: ["Afforestation", "Deforestation", "Conservation", "Cultivation"], answer: 1 },
+    { q: "Which movement, meaning 'to hug' in Hindi, was started by peasants in Uttarakhand to stop tree felling?", options: ["Van Mahotsav", "Chipko Movement", "Green Revolution", "Silent Valley Movement"], answer: 1 },
+    { q: "Which festival is celebrated in the first week of July across India to encourage tree planting?", options: ["Van Mahotsav", "Chipko Movement", "Harvest Festival", "Republic Day"], answer: 0 },
+    { q: "According to a recent Forest Survey of India study, what percentage of India's land area is under forest cover?", options: ["50.12%", "10.05%", "24.62%", "75.30%"], answer: 2 },
+    { q: "Which is the largest continent, and the one India was once part of?", options: ["Africa", "Asia", "Europe", "Australia"], answer: 1 },
+    { q: "Which of these is the smallest continent?", options: ["South America", "Antarctica", "Australia", "Asia"], answer: 2 },
+    { q: "Which of these is NOT one of the countries that form the Indian Subcontinent?", options: ["Bhutan", "Sri Lanka", "China", "Nepal"], answer: 2 },
+    { q: "Which animals are found in high-altitude places like Nepal and Bhutan?", options: ["Snow leopards and red pandas", "Whales and dolphins", "Flamingoes and pelicans", "Crocodiles and gharials"], answer: 0 },
+    { q: "In Bangladesh, Sri Lanka and Maldives, which animals are found due to the proximity of the ocean?", options: ["Snow leopards", "Turtles, whales and dolphins", "Wild buffaloes", "Himalayan griffons"], answer: 1 },
+    { q: "What is a protected area that conserves nature and wildlife while also allowing public recreation called?", options: ["A wildlife sanctuary", "A national park", "A grazing ground", "A forest floor"], answer: 1 },
+    { q: "Is hunting, shooting or capturing any bird or animal allowed in a national park or wildlife sanctuary?", options: ["Yes, always", "Only at night", "No, it is not allowed", "Only for scientists"], answer: 2 },
+    { q: "Corbett National Park, home to Asiatic elephants, tigers, leopards and crocodiles, is located in which state?", options: ["Uttarakhand", "Assam", "Gujarat", "Kerala"], answer: 0 },
+    { q: "Which national park in Assam, set in swamps and grasslands, is home to rhinos, tigers and leopards?", options: ["Kanha National Park", "Kaziranga National Park", "Ranthambore National Park", "Gir Wildlife Sanctuary"], answer: 1 },
+    { q: "The Sundarbans Tiger Reserve, home to Bengal Tigers and Olive Ridley Sea Turtles, is in which state?", options: ["West Bengal", "Rajasthan", "Odisha", "Karnataka"], answer: 0 },
+    { q: "Gir Wildlife Sanctuary, home to Asiatic Lions and Leopards, is located in which state?", options: ["Madhya Pradesh", "Gujarat", "Kerala", "Karnataka"], answer: 1 },
+    { q: "Which animal is the national animal of India and the largest member of the cat family?", options: ["Asiatic Lion", "Blackbuck Antelope", "Royal Bengal Tiger", "Leopard"], answer: 2 },
+    { q: "The Royal Bengal Tiger is found in dense jungles with thick grasslands where it can:", options: ["Fly to catch birds", "Camouflage and stalk its prey", "Live underwater", "Build nests in trees"], answer: 1 },
+    { q: "What is the Blackbuck Antelope (Kala Hiran) known for?", options: ["Its long trunk", "Its ringed horns and speed", "Living underwater", "Its feathers"], answer: 1 },
+    { q: "What is the food habit of the Blackbuck Antelope?", options: ["Carnivorous", "Herbivorous", "Omnivorous", "It doesn't eat"], answer: 1 },
+    { q: "The Asiatic Elephant is the largest mammal in India, but is smaller compared to which other elephant?", options: ["The African Elephant", "The Woolly Mammoth", "The Dwarf Elephant", "There is no other kind"], answer: 0 },
+    { q: "Which wildlife sanctuary is the only remaining refuge for the Asiatic Lion?", options: ["Corbett National Park", "Kaziranga National Park", "Gir Wildlife Sanctuary", "Ranthambore National Park"], answer: 2 },
+    { q: "Which bird is known as the world's tallest living flying bird?", options: ["Peacock", "Sarus Crane", "Flamingo", "Himalayan Griffon"], answer: 1 },
+    { q: "What is the food habit of the Sarus Crane?", options: ["Carnivorous", "Herbivorous", "Omnivorous", "It doesn't eat"], answer: 2 },
+    { q: "Which big cat is described as graceful and stealthy, an accomplished stalker and agile climber with sharp eyesight and hearing?", options: ["Asiatic Lion", "Royal Bengal Tiger", "Leopard", "Blackbuck"], answer: 2 },
+    { q: "How far can the Indian Spectacled Cobra spit its venom?", options: ["Half a meter", "2 meters", "10 meters", "It cannot spit venom"], answer: 1 },
+    { q: "What is a toxin that causes its effect through contact with the blood stream called?", options: ["A poison", "A venom", "A vitamin", "A vaccine"], answer: 1 },
+    { q: "What is a toxin that causes its effect through ingestion or absorption called?", options: ["A poison", "A venom", "A hormone", "An antibiotic"], answer: 0 },
+    { q: "The one-horned rhinoceros, found only in India, weighs around how much?", options: ["200 kg", "2000 kg", "20 kg", "20,000 kg"], answer: 1 },
+    { q: "Rhinos found in Asia usually have how many horns, compared to those found in Africa?", options: ["One horn in Asia, two in Africa", "Two horns in Asia, one in Africa", "No horns in either", "Three horns in both"], answer: 0 },
+    { q: "Which bird is the national bird of India, known for its brightly coloured tail of feathers?", options: ["Sarus Crane", "Peacock", "Flamingo", "Himalayan Griffon"], answer: 1 },
+    { q: "The tusks of elephants are actually their:", options: ["Ribs", "Incisors", "Whiskers", "Claws"], answer: 1 },
+    { q: "Wild animals like the tiger, rhinoceros and elephant are poached mainly for their:", options: ["Body parts, like skin, horns and tusks", "Ability to sing", "Colourful feathers", "Speed"], answer: 0 },
+    { q: "What is the prime reason for the decrease in the number of wild animals?", options: ["Too much rainfall", "Loss of habitat", "Too many national parks", "Cold weather"], answer: 1 },
+    { q: "When wild animals come out of shrinking forests and eat crops or livestock, and farmers kill them to protect their livestock, what is this called?", options: ["Man-animal conflict", "Deforestation", "Photosynthesis", "Migration"], answer: 0 }
+  ];
+
+  // ---------------- FOREST TYPE EXPLORER ----------------
+  var tabsEl = document.getElementById("forest-tabs");
+  var detailEl = document.getElementById("forest-detail");
+
+  function renderForestDetail(idx) {
+    var f = forestTypes[idx];
+    detailEl.innerHTML =
+      '<h3>' + f.emoji + ' ' + f.name + '</h3>' +
+      '<span class="where-tag">📍 ' + f.where + '</span>' +
+      '<ul>' + f.facts.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' +
+      '<div class="tree-chip-row">' + f.trees.map(function (t) { return '<span class="tree-chip">🌱 ' + t + '</span>'; }).join('') + '</div>';
+  }
+
+  forestTypes.forEach(function (f, idx) {
+    var btn = document.createElement('button');
+    btn.className = 'forest-tab-btn' + (idx === 0 ? ' active' : '');
+    btn.style.background = f.color;
+    btn.textContent = f.emoji + ' ' + f.name;
+    btn.addEventListener('click', function () {
+      Array.prototype.forEach.call(tabsEl.children, function (c) { c.classList.remove('active'); });
+      btn.classList.add('active');
+      renderForestDetail(idx);
+    });
+    tabsEl.appendChild(btn);
+  });
+  renderForestDetail(0);
+
+  // ---------------- LOCATION CARD EXPLORER ("Where Do Forests Grow") ----------------
+  function chipify(str) {
+    var parts = str.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    var merged = [];
+    parts.forEach(function (p) {
+      if (p.toLowerCase() === 'etc.' && merged.length) {
+        merged[merged.length - 1] += ', etc.';
+      } else {
+        merged.push(p);
+      }
+    });
+    return merged;
+  }
+
+  var locationTabsEl = document.getElementById("location-tabs");
+  var locationCardEl = document.getElementById("location-card");
+  var locationDotsEl = document.getElementById("location-dots");
+  var locIndex = 0;
+
+  function buildWeatherLayer(type) {
+    var layer = document.createElement('div');
+    layer.className = 'weather-layer';
+    var i, el;
+    if (type === 'rain') {
+      for (i = 0; i < 26; i++) {
+        el = document.createElement('span');
+        el.className = 'drop';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.animationDelay = (Math.random() * 2) + 's';
+        el.style.animationDuration = (0.6 + Math.random() * 0.5) + 's';
+        layer.appendChild(el);
+      }
+    } else if (type === 'snow') {
+      for (i = 0; i < 20; i++) {
+        el = document.createElement('span');
+        el.className = 'flake';
+        el.textContent = '❄';
+        el.style.left = Math.random() * 100 + '%';
+        el.style.fontSize = (0.6 + Math.random() * 0.6) + 'rem';
+        el.style.animationDelay = (Math.random() * 4) + 's';
+        el.style.animationDuration = (3 + Math.random() * 3) + 's';
+        layer.appendChild(el);
+      }
+    } else if (type === 'leaves') {
+      var leafEmoji = ['🍂', '🍁'];
+      for (i = 0; i < 14; i++) {
+        el = document.createElement('span');
+        el.className = 'leaf';
+        el.textContent = leafEmoji[i % 2];
+        el.style.left = Math.random() * 100 + '%';
+        el.style.animationDelay = (Math.random() * 4) + 's';
+        el.style.animationDuration = (3.5 + Math.random() * 2.5) + 's';
+        layer.appendChild(el);
+      }
+    } else if (type === 'sun') {
+      el = document.createElement('span');
+      el.className = 'sun-glow';
+      el.textContent = '☀️';
+      layer.appendChild(el);
+      for (i = 0; i < 10; i++) {
+        var dust = document.createElement('span');
+        dust.className = 'dust';
+        dust.style.left = Math.random() * 100 + '%';
+        dust.style.top = (40 + Math.random() * 50) + '%';
+        dust.style.animationDelay = (Math.random() * 3) + 's';
+        dust.style.animationDuration = (3 + Math.random() * 2) + 's';
+        layer.appendChild(dust);
+      }
+    } else if (type === 'waves') {
+      el = document.createElement('span');
+      el.className = 'wave wave1';
+      layer.appendChild(el);
+      el = document.createElement('span');
+      el.className = 'wave wave2';
+      layer.appendChild(el);
+    } else if (type === 'mud') {
+      el = document.createElement('span');
+      el.className = 'wave mud-wave wave1';
+      layer.appendChild(el);
+      el = document.createElement('span');
+      el.className = 'wave mud-wave wave2';
+      layer.appendChild(el);
+      for (i = 0; i < 9; i++) {
+        var bubble = document.createElement('span');
+        bubble.className = 'bubble';
+        bubble.style.left = (5 + Math.random() * 90) + '%';
+        bubble.style.animationDelay = (Math.random() * 3.5) + 's';
+        bubble.style.animationDuration = (2.5 + Math.random() * 2) + 's';
+        layer.appendChild(bubble);
+      }
+    }
+    return layer;
+  }
+
+  function renderLocationCard() {
+    var row = locationTable[locIndex];
+    var f = forestTypes.filter(function (x) { return x.key === row.key; })[0];
+    var stateChips = chipify(row.states);
+    var exampleChips = chipify(row.examples);
+    locationCardEl.style.background = f.color;
+    locationCardEl.innerHTML =
+      '<div class="loc-content">' +
+        '<div class="loc-grove">' + f.emoji + f.emoji + f.emoji + '</div>' +
+        '<h3>' + f.name + '</h3>' +
+        '<div class="loc-row"><span class="loc-label">☔ Found</span>' + row.places + '</div>' +
+        '<div class="loc-row"><span class="loc-label">📍 States / Union Territories</span>' +
+          '<div class="loc-chip-row">' + stateChips.map(function (s) { return '<span class="loc-chip">' + s + '</span>'; }).join('') + '</div>' +
+        '</div>' +
+        '<div class="loc-row"><span class="loc-label">🌿 Example Plants / Trees</span>' +
+          '<div class="loc-chip-row">' + exampleChips.map(function (s) { return '<span class="loc-chip">🌱 ' + s + '</span>'; }).join('') + '</div>' +
+        '</div>' +
+      '</div>';
+    locationCardEl.insertBefore(buildWeatherLayer(f.weather), locationCardEl.firstChild);
+
+    Array.prototype.forEach.call(locationTabsEl.children, function (btn, i) {
+      btn.classList.toggle('active', i === locIndex);
+    });
+    Array.prototype.forEach.call(locationDotsEl.children, function (dot, i) {
+      dot.classList.toggle('active', i === locIndex);
+    });
+  }
+
+  locationTable.forEach(function (row, i) {
+    var f = forestTypes.filter(function (x) { return x.key === row.key; })[0];
+    var btn = document.createElement('button');
+    btn.className = 'forest-tab-btn' + (i === 0 ? ' active' : '');
+    btn.style.background = f.color;
+    btn.textContent = f.emoji + ' ' + f.name;
+    btn.addEventListener('click', function () {
+      locIndex = i;
+      renderLocationCard();
+    });
+    locationTabsEl.appendChild(btn);
+
+    var dot = document.createElement('span');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.addEventListener('click', function () {
+      locIndex = i;
+      renderLocationCard();
+    });
+    locationDotsEl.appendChild(dot);
+  });
+
+  document.getElementById('loc-prev').addEventListener('click', function () {
+    locIndex = (locIndex - 1 + locationTable.length) % locationTable.length;
+    renderLocationCard();
+  });
+  document.getElementById('loc-next').addEventListener('click', function () {
+    locIndex = (locIndex + 1) % locationTable.length;
+    renderLocationCard();
+  });
+
+  renderLocationCard();
+
+  // ---------------- LAYER DIAGRAM ----------------
+  var layerDiagram = document.getElementById("layer-diagram");
+  layers.forEach(function (l, i) {
+    var div = document.createElement('div');
+    div.className = 'layer ' + l.key + (i === 0 ? ' open' : '');
+    div.innerHTML = '<div class="layer-title">' + l.title + '</div><div class="layer-detail">' + l.detail + '</div>';
+    div.addEventListener('click', function () {
+      div.classList.toggle('open');
+    });
+    layerDiagram.appendChild(div);
+  });
+
+  // ---------------- RESOURCE GRID ----------------
+  var resourceGrid = document.getElementById("resource-grid");
+  resources.forEach(function (r) {
+    var div = document.createElement('div');
+    div.className = 'resource-card';
+    div.innerHTML = '<div class="emoji">' + r.emoji + '</div><h4>' + r.name + '</h4><p>' + r.desc + '</p>';
+    resourceGrid.appendChild(div);
+  });
+
+  // ---------------- CAUSE / EFFECT ----------------
+  var ceGrid = document.getElementById("cause-effect");
+  causeEffect.forEach(function (c) {
+    var div = document.createElement('div');
+    div.className = 'ce-card';
+    div.innerHTML = '<div class="step">' + c.step + '</div><p>' + c.text + '</p>';
+    ceGrid.appendChild(div);
+  });
+
+  // ---------------- THREATS ACCORDION ----------------
+  var accWrap = document.getElementById("threats-accordion");
+  threats.forEach(function (t) {
+    var item = document.createElement('div');
+    item.className = 'accordion-item';
+    item.innerHTML =
+      '<div class="accordion-header"><span>' + t.title + '</span><span class="arrow">▾</span></div>' +
+      '<div class="accordion-body"><div class="accordion-body-inner">' + t.body + '</div></div>';
+    item.querySelector('.accordion-header').addEventListener('click', function () {
+      item.classList.toggle('open');
+    });
+    accWrap.appendChild(item);
+  });
+
+  // ---------------- CONTINENT ORDER ----------------
+  var continentOrder = document.getElementById("continent-order");
+  continents.forEach(function (c, i) {
+    var span = document.createElement('span');
+    span.className = 'continent-pill';
+    span.innerHTML = '<span class="rank">#' + (i + 1) + '</span>' + c;
+    continentOrder.appendChild(span);
+  });
+
+  // ---------------- ANIMAL CHIP GROUPS ----------------
+  function fillChips(id, list, cls) {
+    var wrap = document.getElementById(id);
+    list.forEach(function (a) {
+      var span = document.createElement('span');
+      span.className = 'animal-chip' + (cls ? ' ' + cls : '');
+      span.textContent = a;
+      wrap.appendChild(span);
+    });
+  }
+  fillChips('mammal-chips', subcontinentMammals, '');
+  fillChips('altitude-chips', altitudeSpecials, 'special');
+  fillChips('coastal-chips', coastalSpecials, 'coastal');
+  fillChips('bird-chips', subcontinentBirds, 'bird');
+
+  // ---------------- PARKS EXPLORER ----------------
+  var parkGrid = document.getElementById("park-grid");
+  var parkSearch = document.getElementById("park-search");
+
+  function renderParks(filter) {
+    var q = (filter || '').trim().toLowerCase();
+    parkGrid.innerHTML = '';
+    var matches = parksData.filter(function (p) {
+      if (!q) return true;
+      return (p.name + ' ' + p.animals + ' ' + p.location + ' ' + p.forest).toLowerCase().indexOf(q) !== -1;
+    });
+    if (matches.length === 0) {
+      parkGrid.innerHTML = '<div class="park-empty">🌿 No parks found — try a different search!</div>';
+      return;
+    }
+    matches.forEach(function (p) {
+      var card = document.createElement('div');
+      card.className = 'park-card';
+      card.innerHTML =
+        '<h3>' + p.emoji + ' ' + p.name + '</h3>' +
+        '<span class="park-loc">📍 ' + p.location + '</span>' +
+        '<span class="park-forest">🌳 ' + p.forest + '</span>' +
+        '<p><strong>Animals:</strong> ' + p.animals + '</p>';
+      parkGrid.appendChild(card);
+    });
+  }
+  renderParks('');
+  parkSearch.addEventListener('input', function () { renderParks(parkSearch.value); });
+
+  // ---------------- FACTFILE ----------------
+  var factfileGrid = document.getElementById("factfile-grid");
+  factfileAnimals.forEach(function (a) {
+    var card = document.createElement('div');
+    card.className = 'factfile-card';
+    card.innerHTML =
+      '<div class="ff-emoji">' + a.emoji + '</div>' +
+      '<h3>' + a.name + '</h3>' +
+      '<div class="ff-row"><strong>Striking features:</strong> ' + a.features + '</div>' +
+      '<div class="ff-row"><strong>Habitat:</strong> ' + a.habitat + '</div>' +
+      '<div class="ff-row"><strong>Food Habit:</strong> ' + a.food + '</div>' +
+      '<span class="ff-diet ' + a.diet + '">' + a.diet.charAt(0).toUpperCase() + a.diet.slice(1) + '</span>' +
+      (a.funFact ? '<div class="ff-fact">' + a.funFact + '</div>' : '');
+    factfileGrid.appendChild(card);
+  });
+
+  // ---------------- POACHED FOR ----------------
+  var poachGrid = document.getElementById("poach-grid");
+  poachedFor.forEach(function (p) {
+    var div = document.createElement('div');
+    div.className = 'resource-card';
+    div.innerHTML = '<div class="emoji">' + p.emoji + '</div><h4>' + p.name + '</h4><p>' + p.desc + '</p>';
+    poachGrid.appendChild(div);
+  });
+
+  // ---------------- MAN-ANIMAL CONFLICT ----------------
+  var conflictSteps = [
+    { step: "Step 1", text: "Forested areas are being cleared every year for building human settlements, agriculture, etc." },
+    { step: "Step 2", text: "Wild animals do not have enough space to live and find food." },
+    { step: "Step 3", text: "They sometimes come out of the forest in search of food and eat the crops or the livestock, causing damage to farmers." },
+    { step: "Step 4", text: "This leads to an increase in man-animal conflict, where the farmers tend to kill these wild animals to protect their livestock." }
+  ];
+  var conflictGrid = document.getElementById("man-animal-conflict");
+  conflictSteps.forEach(function (c) {
+    var div = document.createElement('div');
+    div.className = 'ce-card';
+    div.innerHTML = '<div class="step">' + c.step + '</div><p>' + c.text + '</p>';
+    conflictGrid.appendChild(div);
+  });
+
+  // ---------------- GLOSSARY ----------------
+  var glossaryGrid = document.getElementById("glossary-grid");
+  glossary.forEach(function (g) {
+    var card = document.createElement('div');
+    card.className = 'flip-card';
+    card.innerHTML =
+      '<div class="flip-inner">' +
+        '<div class="flip-front">' + g.term + '<div class="flip-hint">tap to flip</div></div>' +
+        '<div class="flip-back">' + g.def + '</div>' +
+      '</div>';
+    card.addEventListener('click', function () { card.classList.toggle('flipped'); });
+    glossaryGrid.appendChild(card);
+  });
+
+  // ---------------- QUIZ (split into 9 shorter quizzes) ----------------
+  var quizPanel = document.getElementById("quiz-panel");
+
+  var quizSectionMeta = [
+    { title: "Forest Basics", icon: "🌱", size: 5 },
+    { title: "Forest Types & Layers", icon: "🌳", size: 5 },
+    { title: "Water, Soil & Chipko", icon: "💧", size: 5 },
+    { title: "Forest Facts & The Subcontinent", icon: "🌏", size: 5 },
+    { title: "Parks & Protected Areas", icon: "🏞️", size: 5 },
+    { title: "Parks & Famous Animals", icon: "🐯", size: 5 },
+    { title: "Wildlife Factfile I", icon: "🦌", size: 5 },
+    { title: "Wildlife Factfile II", icon: "🐆", size: 5 },
+    { title: "Conservation Wrap-Up", icon: "🦏", size: 6 }
+  ];
+
+  var quizSections = (function () {
+    var out = [];
+    var pos = 0;
+    quizSectionMeta.forEach(function (m, i) {
+      out.push({
+        id: "quiz" + (i + 1),
+        title: m.title,
+        icon: m.icon,
+        questions: quizData.slice(pos, pos + m.size)
+      });
+      pos += m.size;
+    });
+    return out;
+  })();
+
+  var currentSectionIdx = null;
+  var sectionOrder = [];
+  var qIndex = 0;
+  var score = 0;
+  var answered = false;
+  var bestScores = {};
+
+  function shuffled(list) {
+    var arr = list.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  function renderQuizHub() {
+    currentSectionIdx = null;
+    var html = '<div class="quiz-hub-intro">Pick a quiz below — each one is short and quick!</div><div class="quiz-hub-grid">';
+    quizSections.forEach(function (s, i) {
+      var best = bestScores[s.id];
+      html +=
+        '<div class="quiz-hub-card" data-idx="' + i + '">' +
+          '<div class="qh-icon">' + s.icon + '</div>' +
+          '<h3>Quiz ' + (i + 1) + '</h3>' +
+          '<div class="qh-title">' + s.title + '</div>' +
+          '<div class="qh-count">' + s.questions.length + ' questions</div>' +
+          (best !== undefined ? '<div class="qh-best">✅ Best: ' + best + '/' + s.questions.length + '</div>' : '') +
+        '</div>';
+    });
+    html += '</div>';
+    quizPanel.innerHTML = html;
+    var cards = quizPanel.querySelectorAll('.quiz-hub-card');
+    Array.prototype.forEach.call(cards, function (c) {
+      c.addEventListener('click', function () {
+        var idx = parseInt(c.getAttribute('data-idx'), 10);
+        currentSectionIdx = idx;
+        sectionOrder = shuffled(quizSections[idx].questions);
+        qIndex = 0;
+        score = 0;
+        renderQuiz();
+      });
+    });
+  }
+
+  function renderQuiz() {
+    var section = quizSections[currentSectionIdx];
+    if (qIndex >= sectionOrder.length) {
+      renderResult();
+      return;
+    }
+    answered = false;
+    var q = sectionOrder[qIndex];
+    quizPanel.innerHTML =
+      '<button class="quiz-back-btn" id="back-btn">← Back to Quizzes</button>' +
+      '<div class="quiz-progress">' + section.icon + ' Quiz ' + (currentSectionIdx + 1) + ': ' + section.title + ' &nbsp;·&nbsp; Question ' + (qIndex + 1) + ' of ' + sectionOrder.length + ' &nbsp;·&nbsp; Score: ' + score + '</div>' +
+      '<div class="quiz-question">' + q.q + '</div>' +
+      '<div class="quiz-options"></div>' +
+      '<div class="quiz-feedback"></div>' +
+      '<div class="quiz-nav"><button class="quiz-btn" id="next-btn" disabled>Next ➜</button></div>';
+
+    document.getElementById('back-btn').addEventListener('click', renderQuizHub);
+
+    var optWrap = quizPanel.querySelector('.quiz-options');
+    q.options.forEach(function (opt, i) {
+      var b = document.createElement('button');
+      b.className = 'quiz-opt';
+      b.textContent = opt;
+      b.addEventListener('click', function () {
+        if (answered) return;
+        answered = true;
+        var opts = optWrap.querySelectorAll('.quiz-opt');
+        opts[q.answer].classList.add('correct');
+        if (i !== q.answer) b.classList.add('wrong');
+        Array.prototype.forEach.call(opts, function (o) { o.disabled = true; });
+        var fb = quizPanel.querySelector('.quiz-feedback');
+        if (i === q.answer) {
+          score++;
+          fb.textContent = '🎉 Correct!';
+          fb.style.color = '#2f9e44';
+        } else {
+          fb.textContent = '🌿 Not quite — the right answer is highlighted.';
+          fb.style.color = '#e8590c';
+        }
+        document.getElementById('next-btn').disabled = false;
+      });
+      optWrap.appendChild(b);
+    });
+
+    document.getElementById('next-btn').addEventListener('click', function () {
+      qIndex++;
+      renderQuiz();
+    });
+  }
+
+  function renderResult() {
+    var section = quizSections[currentSectionIdx];
+    var total = sectionOrder.length;
+    bestScores[section.id] = Math.max(bestScores[section.id] || 0, score);
+    var pct = Math.round((score / total) * 100);
+    var msg = pct === 100 ? "🌟 Perfect score! You know this topic!" :
+              pct >= 70 ? "🌳 Great job!" :
+              pct >= 40 ? "🌱 Good try! Review this section above and try again." :
+              "🍃 Keep exploring the page above, then try again!";
+    quizPanel.innerHTML =
+      '<div class="quiz-result">' +
+        '<div style="font-weight:700; color:var(--leaf-dark); margin-bottom:4px;">' + section.icon + ' Quiz ' + (currentSectionIdx + 1) + ': ' + section.title + '</div>' +
+        '<div class="score-num">' + score + ' / ' + total + '</div>' +
+        '<p style="font-weight:700; font-size:1.1rem;">' + msg + '</p>' +
+        '<div class="quiz-result-nav">' +
+          '<button class="quiz-btn" id="restart-btn">🔁 Try Again</button>' +
+          '<button class="quiz-btn hub-btn" id="hub-btn">📋 All Quizzes</button>' +
+        '</div>' +
+      '</div>';
+    document.getElementById('restart-btn').addEventListener('click', function () {
+      sectionOrder = shuffled(section.questions);
+      qIndex = 0;
+      score = 0;
+      renderQuiz();
+    });
+    document.getElementById('hub-btn').addEventListener('click', renderQuizHub);
+  }
+
+  renderQuizHub();
+
+  // ---------------- NAV ACTIVE STATE ----------------
+  var navLinks = document.querySelectorAll('#tabnav a');
+  var sections = document.querySelectorAll('main section[id]');
+  function updateActiveNav() {
+    var scrollPos = window.scrollY + 100;
+    var current = sections[0].id;
+    sections.forEach(function (s) {
+      if (s.offsetTop <= scrollPos) current = s.id;
+    });
+    navLinks.forEach(function (a) {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', updateActiveNav);
+  updateActiveNav();
+
+  // ---------------- HEADER HEIGHT (so the parallel intro/types row fits the viewport) ----------------
+  function updateHeaderHeight() {
+    var grid = document.querySelector('.parallel-grid');
+    if (!grid) return;
+    var h = Math.round(grid.getBoundingClientRect().top + window.scrollY);
+    document.documentElement.style.setProperty('--header-h', h + 'px');
+  }
+  updateHeaderHeight();
+  window.addEventListener('resize', updateHeaderHeight);
+  window.addEventListener('load', updateHeaderHeight);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateHeaderHeight);
+  }
+})();
+</script>
+</body>
+</html>
