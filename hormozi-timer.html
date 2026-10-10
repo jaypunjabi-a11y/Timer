@@ -98,6 +98,7 @@
     cursor: pointer;
   }
   .presets button:hover { border-color: var(--ink); }
+  .presets button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
   .controls { display: flex; gap: 10px; width: 100%; }
   .controls button {
@@ -153,11 +154,11 @@
   <div class="status" id="status">Drag the dial or pick a block.</div>
 
   <div class="presets" id="presets">
-    <button data-min="5">5</button>
-    <button data-min="15">15</button>
-    <button data-min="25">25</button>
-    <button data-min="45">45</button>
-    <button data-min="60">60</button>
+    <button data-min="5">5 min</button>
+    <button data-min="15">15 min</button>
+    <button data-min="25" class="on">25 min</button>
+    <button data-min="45">45 min</button>
+    <button data-min="60">60 min</button>
   </div>
 
   <div class="controls">
@@ -252,7 +253,7 @@
 
   // --- audio
   let ctx;
-  const audio = () => (ctx ||= new (window.AudioContext || window.webkitAudioContext)());
+  const audio = () => ctx || (ctx = new (window.AudioContext || window.webkitAudioContext)());
   function click() {
     if (!$("tickToggle").checked) return;
     const c = audio(), o = c.createOscillator(), g = c.createGain();
@@ -290,24 +291,26 @@
   // --- stats (per-viewer, best effort)
   const today = () => new Date().toLocaleDateString("en-CA");
   function loadStats() {
-    try { return JSON.parse(localStorage.getItem("kt-stats")) || {}; } catch { return {}; }
+    try { return JSON.parse(localStorage.getItem("kt-stats")) || {}; } catch (e) { return {}; }
   }
-  function saveStats(s) { try { localStorage.setItem("kt-stats", JSON.stringify(s)); } catch {} }
+  function saveStats(s) { try { localStorage.setItem("kt-stats", JSON.stringify(s)); } catch (e) {} }
   function showStats() {
     const s = loadStats();
-    const d = s.days?.[today()] || { blocks: 0, mins: 0 };
+    const days = s.days || {};
+    const d = days[today()] || { blocks: 0, mins: 0 };
     $("blocks").textContent = d.blocks;
     $("mins").textContent = d.mins;
     let streak = 0;
     const day = new Date();
-    if (!s.days?.[today()]) day.setDate(day.getDate() - 1);
-    while (s.days?.[day.toLocaleDateString("en-CA")]) { streak++; day.setDate(day.getDate() - 1); }
+    if (!days[today()]) day.setDate(day.getDate() - 1);
+    while (days[day.toLocaleDateString("en-CA")]) { streak++; day.setDate(day.getDate() - 1); }
     $("streak").textContent = streak;
   }
   function logBlock(mins) {
     const s = loadStats();
-    s.days ||= {};
-    const d = s.days[today()] ||= { blocks: 0, mins: 0 };
+    if (!s.days) s.days = {};
+    if (!s.days[today()]) s.days[today()] = { blocks: 0, mins: 0 };
+    const d = s.days[today()];
     d.blocks++; d.mins += mins;
     saveStats(s); showStats();
   }
@@ -323,7 +326,7 @@
   }
   function start() {
     if (remainingMs <= 0) return;
-    audio().resume?.();
+    try { const c = audio(); if (c.resume) c.resume(); } catch (e) {}
     running = true; timerEl.classList.add("running");
     endAt = Date.now() + remainingMs;
     statusEl.textContent = "Locked in. No stopping till it rings.";
@@ -347,11 +350,14 @@
     ring();
   }
   function setMinutes(min) {
-    if (running) return;
+    const wasRunning = running;
+    if (running) pause();
     if (ringing) stopRing();
     setMs = remainingMs = Math.max(0, Math.min(MAX_MIN, min)) * 60000;
     statusEl.textContent = setMs ? `${min} minute block. Hit start.` : "Twist the dial to set a time.";
+    document.querySelectorAll("#presets button").forEach(b => b.classList.toggle("on", +b.dataset.min === min));
     render();
+    if (wasRunning && setMs) start();
   }
 
   goBtn.onclick = () => ringing ? stopRing() : running ? pause() : start();
@@ -362,7 +368,7 @@
     statusEl.textContent = "Reset. Ready when you are.";
     render();
   };
-  $("presets").onclick = e => { const m = e.target.dataset.min; if (m) setMinutes(+m); };
+  document.querySelectorAll("#presets button").forEach(b => b.addEventListener("click", () => setMinutes(+b.dataset.min)));
 
   // --- drag to twist (clockwise adds time)
   let dragging = false, lastAngle = 0, dragMs = 0;
