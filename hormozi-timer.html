@@ -66,17 +66,7 @@
   }
   .timer svg { width: 100%; height: 100%; display: block; cursor: grab; }
   .timer.dragging svg { cursor: grabbing; }
-  .pointer {
-    position: absolute; left: 50%; top: 1.5%;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 12px solid transparent; border-right: 12px solid transparent;
-    border-top: 20px solid var(--ink);
-    filter: drop-shadow(0 2px 1px #0004);
-    pointer-events: none;
-  }
-  #dial { transition: transform .35s cubic-bezier(.2,.8,.2,1); transform-origin: 100px 100px; }
-  .running #dial, .dragging #dial { transition: none; }
+  #hand { transform-origin: 100px 100px; }
 
   .readout {
     font-family: "JetBrains Mono", ui-monospace, monospace;
@@ -132,7 +122,7 @@
 <main>
   <header>
     <h1>Hormozi Kitchen Timer</h1>
-    <p class="tag">Twist the dial. Phone away. Work till it rings.</p>
+    <p class="tag">Set the dial. Phone away. Work till it rings.</p>
   </header>
 
   <div class="timer" id="timer" aria-label="Kitchen timer dial. Drag to set minutes.">
@@ -140,14 +130,14 @@
       <circle cx="100" cy="100" r="98" fill="#0002"/>
       <g id="dial">
         <circle cx="100" cy="100" r="96" fill="var(--face)"/>
-        <path id="elapsedArc" fill="var(--accent)" opacity=".18"/>
+        <path id="remainArc" fill="var(--accent)" opacity=".3"/>
         <g id="ticks"></g>
-        <circle cx="100" cy="100" r="30" fill="var(--accent)"/>
-        <rect x="94" y="68" width="12" height="64" rx="6" fill="#0003"/>
-        <rect x="95" y="70" width="10" height="60" rx="5" fill="var(--accent)" stroke="#0002"/>
+        <g id="hand">
+          <line x1="100" y1="100" x2="100" y2="50" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
+        </g>
+        <circle cx="100" cy="100" r="16" fill="var(--accent)" stroke="#141414" stroke-width="2"/>
       </g>
     </svg>
-    <div class="pointer"></div>
   </div>
 
   <div class="readout" id="readout" aria-live="polite">25:00</div>
@@ -195,11 +185,11 @@
   const timerEl = $("timer"), dial = $("dial"), readout = $("readout"), statusEl = $("status");
   const goBtn = $("go"), resetBtn = $("reset");
 
-  // --- dial face: numbers increase counter-clockwise, like a real kitchen timer
+  // --- dial face: laid out like a clock, 0 at the top and 15 / 30 / 45 going clockwise
   const ticks = $("ticks");
   const NS = "http://www.w3.org/2000/svg";
   for (let m = 0; m < 60; m++) {
-    const a = (-m * 6 - 90) * Math.PI / 180;
+    const a = (m * 6 - 90) * Math.PI / 180;
     const major = m % 5 === 0;
     const r1 = 92, r2 = major ? 80 : 86;
     const line = document.createElementNS(NS, "line");
@@ -215,7 +205,6 @@
       t.setAttribute("text-anchor", "middle"); t.setAttribute("dominant-baseline", "central");
       t.setAttribute("font-family", "Inter, sans-serif"); t.setAttribute("font-weight", "900");
       t.setAttribute("font-size", "15"); t.setAttribute("fill", "#141414");
-      t.setAttribute("transform", `rotate(${-m * 6} ${100 + rt * Math.cos(a)} ${100 + rt * Math.sin(a)})`);
       t.textContent = m;
       ticks.appendChild(t);
     }
@@ -236,15 +225,15 @@
   function arcPath(deg) {
     if (deg <= 0.01) return "";
     if (deg >= 359.99) deg = 359.99;
-    const a = (-deg - 90) * Math.PI / 180;
+    const a = (deg - 90) * Math.PI / 180;
     const x = 100 + 96 * Math.cos(a), y = 100 + 96 * Math.sin(a);
-    return `M100 100 L100 4 A96 96 0 ${deg > 180 ? 1 : 0} 0 ${x} ${y} Z`;
+    return `M100 100 L100 4 A96 96 0 ${deg > 180 ? 1 : 0} 1 ${x} ${y} Z`;
   }
 
   function render() {
     const deg = (remainingMs / 60000) * 6;
-    dial.style.transform = `rotate(${deg}deg)`;
-    $("elapsedArc").setAttribute("d", arcPath(deg));
+    $("hand").style.transform = `rotate(${deg}deg)`;
+    $("remainArc").setAttribute("d", arcPath(deg));
     readout.textContent = fmt(remainingMs);
     document.title = running ? `${fmt(remainingMs)} · Kitchen Timer` : "Kitchen Timer";
     goBtn.textContent = running ? "Pause" : (ringing ? "Stop" : (remainingMs < setMs && remainingMs > 0 ? "Resume" : "Start"));
@@ -370,30 +359,34 @@
   };
   document.querySelectorAll("#presets button").forEach(b => b.addEventListener("click", () => setMinutes(+b.dataset.min)));
 
-  // --- drag to twist (clockwise adds time)
-  let dragging = false, lastAngle = 0, dragMs = 0;
-  const angleOf = e => {
+  // --- tap or drag on the face to set the time (the number under your finger)
+  let dragging = false;
+  const minutesAt = e => {
     const r = timerEl.getBoundingClientRect();
-    return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+    const a = Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+    return ((a + 90 + 360) % 360) / 6;
+  };
+  const applyMinutes = m => {
+    const snapped = Math.round(m) * 60000;
+    if (snapped !== remainingMs) click();
+    setMs = remainingMs = snapped;
+    render();
   };
   timerEl.addEventListener("pointerdown", e => {
     if (running) return;
     if (ringing) stopRing();
     dragging = true; timerEl.classList.add("dragging");
     timerEl.setPointerCapture(e.pointerId);
-    lastAngle = angleOf(e); dragMs = remainingMs;
+    applyMinutes(minutesAt(e));
   });
   timerEl.addEventListener("pointermove", e => {
     if (!dragging) return;
-    const a = angleOf(e);
-    let d = a - lastAngle;
-    if (d > 180) d -= 360; if (d < -180) d += 360;
-    lastAngle = a;
-    dragMs = Math.max(0, Math.min(MAX_MIN * 60000, dragMs + (d / 6) * 60000));
-    const snapped = Math.round(dragMs / 60000) * 60000;
-    if (snapped !== remainingMs) click();
-    setMs = remainingMs = snapped;
-    render();
+    let m = minutesAt(e);
+    const prev = remainingMs / 60000;
+    // don't jump across the top: stop at 60 going clockwise, at 0 going back
+    if (prev >= 45 && m < 15) m = MAX_MIN;
+    else if (prev <= 15 && m > 45) m = 0;
+    applyMinutes(m);
   });
   const endDrag = () => {
     if (!dragging) return;
