@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kitchen Timer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --ink: #141414;
+    --muted: #6b6760;
+    --card: #ffffff;
+    --line: #e2ddd2;
+    --body: #e9e4d8;
+    --face: #fbfaf6;
+    --accent: #e0321b;
+    --accent-ink: #ffffff;
+    --good: #1f8a4c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e0e0e;
+      --ink: #f3f1ec;
+      --muted: #9a958c;
+      --card: #181818;
+      --line: #2a2a2a;
+      --body: #222;
+      --face: #f4f1ea;
+      --accent: #ff4a2e;
+      --accent-ink: #ffffff;
+      --good: #3ccf7a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e0e0e; --ink: #f3f1ec; --muted: #9a958c; --card: #181818; --line: #2a2a2a;
+    --body: #222; --face: #f4f1ea; --accent: #ff4a2e; --accent-ink: #fff; --good: #3ccf7a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Inter, system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 40px;
+  }
+  main { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+  header { text-align: center; }
+  h1 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase; }
+  .tag { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+
+  .timer {
+    position: relative;
+    width: min(340px, 86vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #fff3, transparent 60%), var(--accent);
+    box-shadow: 0 18px 40px #0003, inset 0 -8px 0 #0002;
+    padding: 6%;
+    touch-action: none;
+    user-select: none;
+  }
+  .timer svg { width: 100%; height: 100%; display: block; cursor: grab; }
+  .timer.dragging svg { cursor: grabbing; }
+  .pointer {
+    position: absolute; left: 50%; top: 1.5%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 12px solid transparent; border-right: 12px solid transparent;
+    border-top: 20px solid var(--ink);
+    filter: drop-shadow(0 2px 1px #0004);
+    pointer-events: none;
+  }
+  #dial { transition: transform .35s cubic-bezier(.2,.8,.2,1); transform-origin: 100px 100px; }
+  .running #dial, .dragging #dial { transition: none; }
+
+  .readout {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: clamp(56px, 18vw, 76px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .readout.done { color: var(--accent); animation: shake .5s ease-in-out infinite; }
+  @keyframes shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-3deg)} 75%{transform:rotate(3deg)} }
+  .status { color: var(--muted); font-size: 14px; min-height: 1.2em; text-align: center; margin-top: -10px; }
+
+  .presets { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+  .presets button {
+    font: 700 14px Inter, sans-serif;
+    padding: 9px 14px; border-radius: 999px;
+    border: 2px solid var(--line); background: var(--card); color: var(--ink);
+    cursor: pointer;
+  }
+  .presets button:hover { border-color: var(--ink); }
+
+  .controls { display: flex; gap: 10px; width: 100%; }
+  .controls button {
+    flex: 1; font: 900 17px Inter, sans-serif; text-transform: uppercase; letter-spacing: .04em;
+    padding: 16px; border-radius: 14px; border: none; cursor: pointer;
+  }
+  #go { background: var(--ink); color: var(--bg); flex: 2; }
+  #reset { background: var(--card); color: var(--ink); border: 2px solid var(--line); }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+
+  .stats {
+    width: 100%; display: grid; grid-template-columns: repeat(3, 1fr);
+    background: var(--card); border: 2px solid var(--line); border-radius: 16px;
+  }
+  .stat { padding: 14px 8px; text-align: center; }
+  .stat + .stat { border-left: 2px solid var(--line); }
+  .stat b { display: block; font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .stat span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+
+  .rules {
+    width: 100%; background: var(--card); border: 2px solid var(--line); border-radius: 16px;
+    padding: 16px 18px; font-size: 14px; line-height: 1.5;
+  }
+  .rules h2 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .rules ol { margin: 0; padding-left: 20px; }
+  .toggles { display: flex; gap: 18px; font-size: 14px; color: var(--muted); }
+  .toggles label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Hormozi Kitchen Timer</h1>
+    <p class="tag">Twist the dial. Phone away. Work till it rings.</p>
+  </header>
+
+  <div class="timer" id="timer" aria-label="Kitchen timer dial. Drag to set minutes.">
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <circle cx="100" cy="100" r="98" fill="#0002"/>
+      <g id="dial">
+        <circle cx="100" cy="100" r="96" fill="var(--face)"/>
+        <path id="elapsedArc" fill="var(--accent)" opacity=".18"/>
+        <g id="ticks"></g>
+        <circle cx="100" cy="100" r="30" fill="var(--accent)"/>
+        <rect x="94" y="68" width="12" height="64" rx="6" fill="#0003"/>
+        <rect x="95" y="70" width="10" height="60" rx="5" fill="var(--accent)" stroke="#0002"/>
+      </g>
+    </svg>
+    <div class="pointer"></div>
+  </div>
+
+  <div class="readout" id="readout" aria-live="polite">25:00</div>
+  <div class="status" id="status">Drag the dial or pick a block.</div>
+
+  <div class="presets" id="presets">
+    <button data-min="5">5</button>
+    <button data-min="15">15</button>
+    <button data-min="25">25</button>
+    <button data-min="45">45</button>
+    <button data-min="60">60</button>
+  </div>
+
+  <div class="controls">
+    <button id="go">Start</button>
+    <button id="reset">Reset</button>
+  </div>
+
+  <div class="toggles">
+    <label><input type="checkbox" id="tickToggle" checked> Ticking</label>
+    <label><input type="checkbox" id="themeToggle"> Dark</label>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="blocks">0</b><span>Blocks today</span></div>
+    <div class="stat"><b id="mins">0</b><span>Focused min</span></div>
+    <div class="stat"><b id="streak">0</b><span>Day streak</span></div>
+  </div>
+
+  <section class="rules">
+    <h2>The rules</h2>
+    <ol>
+      <li>Pick one task. Just one.</li>
+      <li>Phone in another room. Tabs closed.</li>
+      <li>Twist the timer. No stopping till it rings.</li>
+      <li>Ring = 5 min break. Then do another rep.</li>
+    </ol>
+  </section>
+</main>
+
+<script>
+(() => {
+  const MAX_MIN = 60;
+  const $ = id => document.getElementById(id);
+  const timerEl = $("timer"), dial = $("dial"), readout = $("readout"), statusEl = $("status");
+  const goBtn = $("go"), resetBtn = $("reset");
+
+  // --- dial face: numbers increase counter-clockwise, like a real kitchen timer
+  const ticks = $("ticks");
+  const NS = "http://www.w3.org/2000/svg";
+  for (let m = 0; m < 60; m++) {
+    const a = (-m * 6 - 90) * Math.PI / 180;
+    const major = m % 5 === 0;
+    const r1 = 92, r2 = major ? 80 : 86;
+    const line = document.createElementNS(NS, "line");
+    line.setAttribute("x1", 100 + r1 * Math.cos(a)); line.setAttribute("y1", 100 + r1 * Math.sin(a));
+    line.setAttribute("x2", 100 + r2 * Math.cos(a)); line.setAttribute("y2", 100 + r2 * Math.sin(a));
+    line.setAttribute("stroke", "#141414");
+    line.setAttribute("stroke-width", major ? 2.2 : 1);
+    ticks.appendChild(line);
+    if (major) {
+      const t = document.createElementNS(NS, "text");
+      const rt = 66;
+      t.setAttribute("x", 100 + rt * Math.cos(a)); t.setAttribute("y", 100 + rt * Math.sin(a));
+      t.setAttribute("text-anchor", "middle"); t.setAttribute("dominant-baseline", "central");
+      t.setAttribute("font-family", "Inter, sans-serif"); t.setAttribute("font-weight", "900");
+      t.setAttribute("font-size", "15"); t.setAttribute("fill", "#141414");
+      t.setAttribute("transform", `rotate(${-m * 6} ${100 + rt * Math.cos(a)} ${100 + rt * Math.sin(a)})`);
+      t.textContent = m;
+      ticks.appendChild(t);
+    }
+  }
+
+  // --- state
+  let setMs = 25 * 60000;       // what the dial was set to
+  let remainingMs = setMs;
+  let endAt = 0;
+  let running = false, ringing = false;
+  let raf = 0, lastTickSec = -1;
+
+  const fmt = ms => {
+    const s = Math.ceil(ms / 1000);
+    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+  };
+
+  function arcPath(deg) {
+    if (deg <= 0.01) return "";
+    if (deg >= 359.99) deg = 359.99;
+    const a = (-deg - 90) * Math.PI / 180;
+    const x = 100 + 96 * Math.cos(a), y = 100 + 96 * Math.sin(a);
+    return `M100 100 L100 4 A96 96 0 ${deg > 180 ? 1 : 0} 0 ${x} ${y} Z`;
+  }
+
+  function render() {
+    const deg = (remainingMs / 60000) * 6;
+    dial.style.transform = `rotate(${deg}deg)`;
+    $("elapsedArc").setAttribute("d", arcPath(deg));
+    readout.textContent = fmt(remainingMs);
+    document.title = running ? `${fmt(remainingMs)} · Kitchen Timer` : "Kitchen Timer";
+    goBtn.textContent = running ? "Pause" : (ringing ? "Stop" : (remainingMs < setMs && remainingMs > 0 ? "Resume" : "Start"));
+    goBtn.disabled = !running && !ringing && remainingMs <= 0;
+  }
+
+  // --- audio
+  let ctx;
+  const audio = () => (ctx ||= new (window.AudioContext || window.webkitAudioContext)());
+  function click() {
+    if (!$("tickToggle").checked) return;
+    const c = audio(), o = c.createOscillator(), g = c.createGain();
+    o.type = "square"; o.frequency.value = 1800;
+    g.gain.setValueAtTime(0.05, c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.025);
+    o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime + 0.03);
+  }
+  let ringTimer = 0;
+  function ring() {
+    const c = audio();
+    let n = 0;
+    const strike = () => {
+      if (!ringing || n++ > 24) { stopRing(); return; }
+      const t = c.currentTime;
+      [2400, 3100].forEach(f => {
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = "triangle"; o.frequency.value = f;
+        g.gain.setValueAtTime(0.18, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+        o.connect(g).connect(c.destination); o.start(t); o.stop(t + 0.13);
+      });
+    };
+    strike();
+    ringTimer = setInterval(strike, 140);
+    if (navigator.vibrate) navigator.vibrate([400, 150, 400, 150, 400]);
+  }
+  function stopRing() {
+    clearInterval(ringTimer);
+    ringing = false;
+    readout.classList.remove("done");
+    render();
+  }
+
+  // --- stats (per-viewer, best effort)
+  const today = () => new Date().toLocaleDateString("en-CA");
+  function loadStats() {
+    try { return JSON.parse(localStorage.getItem("kt-stats")) || {}; } catch { return {}; }
+  }
+  function saveStats(s) { try { localStorage.setItem("kt-stats", JSON.stringify(s)); } catch {} }
+  function showStats() {
+    const s = loadStats();
+    const d = s.days?.[today()] || { blocks: 0, mins: 0 };
+    $("blocks").textContent = d.blocks;
+    $("mins").textContent = d.mins;
+    let streak = 0;
+    const day = new Date();
+    if (!s.days?.[today()]) day.setDate(day.getDate() - 1);
+    while (s.days?.[day.toLocaleDateString("en-CA")]) { streak++; day.setDate(day.getDate() - 1); }
+    $("streak").textContent = streak;
+  }
+  function logBlock(mins) {
+    const s = loadStats();
+    s.days ||= {};
+    const d = s.days[today()] ||= { blocks: 0, mins: 0 };
+    d.blocks++; d.mins += mins;
+    saveStats(s); showStats();
+  }
+
+  // --- run loop
+  function loop() {
+    remainingMs = Math.max(0, endAt - Date.now());
+    const sec = Math.ceil(remainingMs / 1000);
+    if (sec !== lastTickSec) { lastTickSec = sec; if (sec > 0) click(); }
+    if (remainingMs <= 0) { finish(); return; }
+    render();
+    raf = requestAnimationFrame(loop);
+  }
+  function start() {
+    if (remainingMs <= 0) return;
+    audio().resume?.();
+    running = true; timerEl.classList.add("running");
+    endAt = Date.now() + remainingMs;
+    statusEl.textContent = "Locked in. No stopping till it rings.";
+    loop();
+  }
+  function pause() {
+    running = false; timerEl.classList.remove("running");
+    cancelAnimationFrame(raf);
+    statusEl.textContent = "Paused. Get back in.";
+    render();
+  }
+  function finish() {
+    running = false; timerEl.classList.remove("running");
+    cancelAnimationFrame(raf);
+    remainingMs = 0;
+    ringing = true;
+    readout.classList.add("done");
+    logBlock(Math.round(setMs / 60000));
+    statusEl.textContent = "Rep done. Take 5, then go again.";
+    render();
+    ring();
+  }
+  function setMinutes(min) {
+    if (running) return;
+    if (ringing) stopRing();
+    setMs = remainingMs = Math.max(0, Math.min(MAX_MIN, min)) * 60000;
+    statusEl.textContent = setMs ? `${min} minute block. Hit start.` : "Twist the dial to set a time.";
+    render();
+  }
+
+  goBtn.onclick = () => ringing ? stopRing() : running ? pause() : start();
+  resetBtn.onclick = () => {
+    if (running) pause();
+    if (ringing) stopRing();
+    remainingMs = setMs;
+    statusEl.textContent = "Reset. Ready when you are.";
+    render();
+  };
+  $("presets").onclick = e => { const m = e.target.dataset.min; if (m) setMinutes(+m); };
+
+  // --- drag to twist (clockwise adds time)
+  let dragging = false, lastAngle = 0, dragMs = 0;
+  const angleOf = e => {
+    const r = timerEl.getBoundingClientRect();
+    return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+  };
+  timerEl.addEventListener("pointerdown", e => {
+    if (running) return;
+    if (ringing) stopRing();
+    dragging = true; timerEl.classList.add("dragging");
+    timerEl.setPointerCapture(e.pointerId);
+    lastAngle = angleOf(e); dragMs = remainingMs;
+  });
+  timerEl.addEventListener("pointermove", e => {
+    if (!dragging) return;
+    const a = angleOf(e);
+    let d = a - lastAngle;
+    if (d > 180) d -= 360; if (d < -180) d += 360;
+    lastAngle = a;
+    dragMs = Math.max(0, Math.min(MAX_MIN * 60000, dragMs + (d / 6) * 60000));
+    const snapped = Math.round(dragMs / 60000) * 60000;
+    if (snapped !== remainingMs) click();
+    setMs = remainingMs = snapped;
+    render();
+  });
+  const endDrag = () => {
+    if (!dragging) return;
+    dragging = false; timerEl.classList.remove("dragging");
+    setMinutes(Math.round(remainingMs / 60000));
+  };
+  timerEl.addEventListener("pointerup", endDrag);
+  timerEl.addEventListener("pointercancel", endDrag);
+
+  // --- keyboard
+  document.addEventListener("keydown", e => {
+    if (e.target.tagName === "INPUT") return;
+    if (e.code === "Space") { e.preventDefault(); goBtn.click(); }
+    if (!running && (e.key === "ArrowUp" || e.key === "ArrowRight")) setMinutes(Math.round(setMs / 60000) + 1);
+    if (!running && (e.key === "ArrowDown" || e.key === "ArrowLeft")) setMinutes(Math.round(setMs / 60000) - 1);
+  });
+
+  // --- theme
+  const themeToggle = $("themeToggle");
+  themeToggle.checked = matchMedia("(prefers-color-scheme: dark)").matches;
+  themeToggle.onchange = () => document.documentElement.dataset.theme = themeToggle.checked ? "dark" : "light";
+
+  showStats();
+  render();
+})();
+</script>
+</body>
+</html>
