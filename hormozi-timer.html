@@ -2,47 +2,56 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kitchen Timer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
+  /* Layout: one centred column; a beveled candy-coloured dial on a soft beige ground, chunky pressable buttons below */
   :root {
-    --bg: #f4f1ea;
-    --ink: #141414;
-    --muted: #6b6760;
-    --card: #ffffff;
-    --line: #e2ddd2;
-    --body: #e9e4d8;
-    --face: #fbfaf6;
-    --accent: #e0321b;
-    --accent-ink: #ffffff;
-    --good: #1f8a4c;
+    --bg: #f6ecdf;          /* beige */
+    --bg-glow-a: #fbd9e3;   /* pink haze */
+    --bg-glow-b: #d6e6f8;   /* blue haze */
+    --surface: #fffaf3;
+    --line: #ecdccb;
+    --ink: #3b2a4f;         /* plum text */
+    --muted: #7d6a8c;
+    --face: #fff6ea;        /* dial face stays light in both themes */
+    --face-ink: #3b2a4f;
+    --purple: #9a7be0;  --purple-deep: #6f51bd;
+    --orange: #ffc396;  --orange-deep: #e5925a;
+    --pink:   #f6a9c6;  --pink-deep:   #d4769c;
+    --blue:   #a3cbf2;  --blue-deep:   #6c9fd3;
+    --shadow: rgba(59, 42, 79, .2);
+    --display: "Fredoka", "Nunito", system-ui, sans-serif;
+    --body: "Nunito", system-ui, sans-serif;
+    color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #0e0e0e;
-      --ink: #f3f1ec;
-      --muted: #9a958c;
-      --card: #181818;
-      --line: #2a2a2a;
-      --body: #222;
-      --face: #f4f1ea;
-      --accent: #ff4a2e;
-      --accent-ink: #ffffff;
-      --good: #3ccf7a;
+      --bg: #231a31; --bg-glow-a: #3a2442; --bg-glow-b: #1f2a44;
+      --surface: #30253f; --line: #46375a; --ink: #f6ecdf; --muted: #bba9cc;
+      --shadow: rgba(0, 0, 0, .45);
+      color-scheme: dark;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #0e0e0e; --ink: #f3f1ec; --muted: #9a958c; --card: #181818; --line: #2a2a2a;
-    --body: #222; --face: #f4f1ea; --accent: #ff4a2e; --accent-ink: #fff; --good: #3ccf7a;
+    --bg: #231a31; --bg-glow-a: #3a2442; --bg-glow-b: #1f2a44;
+    --surface: #30253f; --line: #46375a; --ink: #f6ecdf; --muted: #bba9cc;
+    --shadow: rgba(0, 0, 0, .45);
+    color-scheme: dark;
   }
+
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    background: var(--bg);
+    background:
+      radial-gradient(60% 40% at 0% 0%, var(--bg-glow-a), transparent 70%),
+      radial-gradient(60% 40% at 100% 100%, var(--bg-glow-b), transparent 70%),
+      var(--bg);
+    background-attachment: fixed;
     color: var(--ink);
-    font-family: Inter, system-ui, sans-serif;
+    font-family: var(--body);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -50,72 +59,135 @@
   }
   main { width: 100%; max-width: 440px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
   header { text-align: center; }
-  h1 { margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -0.02em; text-transform: uppercase; }
-  .tag { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+  h1 {
+    margin: 0; font-family: var(--display); font-weight: 700; font-size: 30px;
+    letter-spacing: -0.01em; text-wrap: balance;
+    background: linear-gradient(90deg, var(--purple-deep), var(--pink-deep) 60%, var(--orange-deep));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .tag { margin: 4px 0 0; color: var(--muted); font-size: 15px; font-weight: 700; }
 
+  /* ---- dial ---- */
   .timer {
     position: relative;
-    width: min(340px, 86vw);
+    width: min(330px, 84vw);
+    max-width: 100%;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #fff3, transparent 60%), var(--accent);
-    box-shadow: 0 18px 40px #0003, inset 0 -8px 0 #0002;
-    padding: 6%;
+    padding: 6.5%;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), transparent 45%),
+      linear-gradient(145deg, var(--purple), var(--pink));
+    box-shadow:
+      inset 0 6px 10px rgba(255,255,255,.45),
+      inset 0 -10px 18px rgba(59,42,79,.25),
+      0 10px 0 var(--purple-deep),
+      0 22px 34px var(--shadow);
     touch-action: none;
     user-select: none;
   }
-  .timer svg { width: 100%; height: 100%; display: block; cursor: grab; }
+  .timer svg { width: 100%; height: 100%; display: block; cursor: grab; border-radius: 50%; }
   .timer.dragging svg { cursor: grabbing; }
   #hand { transform-origin: 100px 100px; }
 
   .readout {
-    font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: clamp(56px, 18vw, 76px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-family: var(--body);
+    font-size: clamp(56px, 18vw, 78px);
+    font-weight: 900;
     line-height: 1;
     font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    margin-top: 6px;
   }
-  .readout.done { color: var(--accent); animation: shake .5s ease-in-out infinite; }
+  .readout.done { color: var(--pink-deep); animation: shake .5s ease-in-out infinite; }
   @keyframes shake { 0%,100%{transform:rotate(0)} 25%{transform:rotate(-3deg)} 75%{transform:rotate(3deg)} }
-  .status { color: var(--muted); font-size: 14px; min-height: 1.2em; text-align: center; margin-top: -10px; }
+  .status { color: var(--muted); font-size: 15px; font-weight: 700; min-height: 1.3em; text-align: center; margin-top: -10px; }
 
-  .presets { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
-  .presets button {
-    font: 700 14px Inter, sans-serif;
-    padding: 9px 14px; border-radius: 999px;
-    border: 2px solid var(--line); background: var(--card); color: var(--ink);
-    cursor: pointer;
+  /* ---- 3D bevel buttons ---- */
+  .b3d {
+    --c: var(--purple); --cd: var(--purple-deep); --fg: #3b2a4f;
+    font-family: var(--display); font-weight: 600;
+    color: var(--fg);
+    border: none; cursor: pointer;
+    background: var(--c);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c) 55%, white), var(--c) 70%);
+    box-shadow:
+      inset 0 2px 0 rgba(255,255,255,.7),
+      inset 0 -3px 0 rgba(0,0,0,.08),
+      0 6px 0 var(--cd),
+      0 10px 16px var(--shadow);
+    transform: translateY(0);
+    transition: transform .08s ease, box-shadow .08s ease;
+    -webkit-tap-highlight-color: transparent;
   }
-  .presets button:hover { border-color: var(--ink); }
-  .presets button.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .b3d:hover { filter: brightness(1.04); }
+  .b3d:active, .b3d.on {
+    transform: translateY(5px);
+    box-shadow:
+      inset 0 2px 4px rgba(0,0,0,.15),
+      0 1px 0 var(--cd),
+      0 3px 6px var(--shadow);
+  }
+  .b3d:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+  .b3d:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+  .c-purple { --c: var(--purple); --cd: var(--purple-deep); --fg: #fff; }
+  .c-orange { --c: var(--orange); --cd: var(--orange-deep); }
+  .c-pink   { --c: var(--pink);   --cd: var(--pink-deep); }
+  .c-blue   { --c: var(--blue);   --cd: var(--blue-deep); }
 
-  .controls { display: flex; gap: 10px; width: 100%; }
-  .controls button {
-    flex: 1; font: 900 17px Inter, sans-serif; text-transform: uppercase; letter-spacing: .04em;
-    padding: 16px; border-radius: 14px; border: none; cursor: pointer;
-  }
-  #go { background: var(--ink); color: var(--bg); flex: 2; }
-  #reset { background: var(--card); color: var(--ink); border: 2px solid var(--line); }
-  button:disabled { opacity: .4; cursor: not-allowed; }
+  .presets { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 10px; padding-bottom: 6px; }
+  .presets .b3d { font-size: 15px; padding: 10px 15px; border-radius: 999px; }
+  .presets .b3d.on { outline: 2.5px solid var(--ink); outline-offset: 2px; }
 
-  .stats {
-    width: 100%; display: grid; grid-template-columns: repeat(3, 1fr);
-    background: var(--card); border: 2px solid var(--line); border-radius: 16px;
+  .custom {
+    width: 100%;
+    display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: center; gap: 12px;
+    background: var(--surface);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.5), 0 4px 0 var(--line), 0 10px 20px var(--shadow);
   }
+  .custom label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .custom input {
+    width: 92px; font: 800 26px var(--body); text-align: center; color: var(--ink);
+    background: var(--bg); border: 2px solid var(--line); border-radius: 14px; padding: 8px 6px;
+    box-shadow: inset 0 3px 6px var(--shadow);
+    font-variant-numeric: tabular-nums;
+  }
+  .custom input:focus { outline: 3px solid var(--purple); outline-offset: 1px; }
+  .custom .colon { font: 900 28px var(--body); padding-bottom: 10px; color: var(--muted); }
+  .custom .b3d { font-size: 17px; padding: 13px 20px; border-radius: 14px; margin-bottom: 4px; }
+  .custom .hint { flex-basis: 100%; text-align: center; margin: 0; font-size: 13px; color: var(--muted); font-weight: 700; }
+
+  .controls { display: flex; gap: 12px; width: 100%; padding-bottom: 6px; }
+  .controls .b3d { flex: 1; font-size: 19px; letter-spacing: .02em; padding: 16px; border-radius: 18px; }
+  #go { flex: 2; }
+
+  .toggles { display: flex; gap: 20px; font-size: 15px; font-weight: 700; color: var(--muted); }
+  .toggles label { display: flex; align-items: center; gap: 7px; cursor: pointer; }
+  .toggles input { accent-color: var(--purple-deep); width: 18px; height: 18px; }
+
+  .panel {
+    width: 100%; background: var(--surface); border-radius: 20px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.5), 0 4px 0 var(--line), 0 10px 20px var(--shadow);
+  }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); }
   .stat { padding: 14px 8px; text-align: center; }
-  .stat + .stat { border-left: 2px solid var(--line); }
-  .stat b { display: block; font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; }
-  .stat span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+  .stat + .stat { border-left: 2px dashed var(--line); }
+  .stat b { display: block; font: 700 28px var(--display); font-variant-numeric: tabular-nums; }
+  .stat:nth-child(1) b { color: var(--purple-deep); }
+  .stat:nth-child(2) b { color: var(--pink-deep); }
+  .stat:nth-child(3) b { color: var(--blue-deep); }
+  .stat span { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
 
-  .rules {
-    width: 100%; background: var(--card); border: 2px solid var(--line); border-radius: 16px;
-    padding: 16px 18px; font-size: 14px; line-height: 1.5;
-  }
-  .rules h2 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .rules { padding: 16px 20px; font-size: 15px; line-height: 1.55; }
+  .rules h2 { margin: 0 0 6px; font: 600 14px var(--display); text-transform: uppercase; letter-spacing: .1em; color: var(--orange-deep); }
   .rules ol { margin: 0; padding-left: 20px; }
-  .toggles { display: flex; gap: 18px; font-size: 14px; color: var(--muted); }
-  .toggles label { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .b3d { transition: none; }
+    .readout.done { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -125,54 +197,75 @@
     <p class="tag">Set the dial. Phone away. Work till it rings.</p>
   </header>
 
-  <div class="timer" id="timer" aria-label="Kitchen timer dial. Drag to set minutes.">
+  <div class="timer" id="timer" aria-label="Timer dial. Tap or drag to set minutes.">
     <svg viewBox="0 0 200 200" aria-hidden="true">
-      <circle cx="100" cy="100" r="98" fill="#0002"/>
-      <g id="dial">
-        <circle cx="100" cy="100" r="96" fill="var(--face)"/>
-        <path id="remainArc" fill="var(--accent)" opacity=".3"/>
-        <g id="ticks"></g>
-        <g id="hand">
-          <line x1="100" y1="100" x2="100" y2="50" stroke="#141414" stroke-width="5" stroke-linecap="round"/>
-        </g>
-        <circle cx="100" cy="100" r="16" fill="var(--accent)" stroke="#141414" stroke-width="2"/>
+      <defs>
+        <linearGradient id="sliceFill" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffc396"/>
+          <stop offset="1" stop-color="#f6a9c6"/>
+        </linearGradient>
+        <radialGradient id="knobFill" cx=".35" cy=".3" r=".8">
+          <stop offset="0" stop-color="#fff3e6"/>
+          <stop offset=".45" stop-color="#ffc396"/>
+          <stop offset="1" stop-color="#e5925a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="100" cy="100" r="100" fill="var(--face)"/>
+      <path id="remainArc" fill="url(#sliceFill)"/>
+      <g id="ticks"></g>
+      <g id="hand">
+        <line x1="100" y1="100" x2="100" y2="50" stroke="var(--face-ink)" stroke-width="5" stroke-linecap="round"/>
       </g>
+      <circle cx="100" cy="100" r="16" fill="url(#knobFill)" stroke="var(--face-ink)" stroke-width="2"/>
     </svg>
   </div>
 
   <div class="readout" id="readout" aria-live="polite">25:00</div>
-  <div class="status" id="status">Drag the dial or pick a block.</div>
+  <div class="status" id="status">Tap the dial or pick a block.</div>
 
   <div class="presets" id="presets">
-    <button data-min="5">5 min</button>
-    <button data-min="15">15 min</button>
-    <button data-min="25" class="on">25 min</button>
-    <button data-min="45">45 min</button>
-    <button data-min="60">60 min</button>
+    <button class="b3d c-blue" data-min="5">5 min</button>
+    <button class="b3d c-pink" data-min="15">15 min</button>
+    <button class="b3d c-orange on" data-min="25">25 min</button>
+    <button class="b3d c-blue" data-min="45">45 min</button>
+    <button class="b3d c-pink" data-min="60">60 min</button>
+    <button class="b3d c-purple" id="customBtn" aria-expanded="false" aria-controls="custom">Custom</button>
   </div>
 
+  <form class="custom" id="custom" hidden>
+    <label for="customMin">Minutes
+      <input id="customMin" type="number" inputmode="numeric" min="0" max="240" value="20">
+    </label>
+    <span class="colon">:</span>
+    <label for="customSec">Seconds
+      <input id="customSec" type="number" inputmode="numeric" min="0" max="59" value="0">
+    </label>
+    <button class="b3d c-orange" type="submit">Set</button>
+    <p class="hint">Any time up to 4 hours. Over 60 min, the dial fills once the last hour starts.</p>
+  </form>
+
   <div class="controls">
-    <button id="go">Start</button>
-    <button id="reset">Reset</button>
+    <button class="b3d c-purple" id="go">Start</button>
+    <button class="b3d c-blue" id="reset">Reset</button>
   </div>
 
   <div class="toggles">
-    <label><input type="checkbox" id="tickToggle" checked> Ticking</label>
-    <label><input type="checkbox" id="themeToggle"> Dark</label>
+    <label for="tickToggle"><input type="checkbox" id="tickToggle" checked> Ticking</label>
+    <label for="themeToggle"><input type="checkbox" id="themeToggle"> Dark</label>
   </div>
 
-  <div class="stats">
+  <div class="panel stats">
     <div class="stat"><b id="blocks">0</b><span>Blocks today</span></div>
     <div class="stat"><b id="mins">0</b><span>Focused min</span></div>
     <div class="stat"><b id="streak">0</b><span>Day streak</span></div>
   </div>
 
-  <section class="rules">
+  <section class="panel rules">
     <h2>The rules</h2>
     <ol>
       <li>Pick one task. Just one.</li>
       <li>Phone in another room. Tabs closed.</li>
-      <li>Twist the timer. No stopping till it rings.</li>
+      <li>Set the timer. No stopping till it rings.</li>
       <li>Ring = 5 min break. Then do another rep.</li>
     </ol>
   </section>
@@ -180,10 +273,12 @@
 
 <script>
 (() => {
-  const MAX_MIN = 60;
+  const DIAL_MIN = 60;            // the dial shows one hour
+  const MAX_MS = 240 * 60000;     // custom times up to 4 hours
   const $ = id => document.getElementById(id);
-  const timerEl = $("timer"), dial = $("dial"), readout = $("readout"), statusEl = $("status");
+  const timerEl = $("timer"), readout = $("readout"), statusEl = $("status");
   const goBtn = $("go"), resetBtn = $("reset");
+  const customForm = $("custom"), customBtn = $("customBtn");
 
   // --- dial face: laid out like a clock, 0 at the top and 15 / 30 / 45 going clockwise
   const ticks = $("ticks");
@@ -191,47 +286,54 @@
   for (let m = 0; m < 60; m++) {
     const a = (m * 6 - 90) * Math.PI / 180;
     const major = m % 5 === 0;
-    const r1 = 92, r2 = major ? 80 : 86;
+    const r1 = 94, r2 = major ? 82 : 88;
     const line = document.createElementNS(NS, "line");
     line.setAttribute("x1", 100 + r1 * Math.cos(a)); line.setAttribute("y1", 100 + r1 * Math.sin(a));
     line.setAttribute("x2", 100 + r2 * Math.cos(a)); line.setAttribute("y2", 100 + r2 * Math.sin(a));
-    line.setAttribute("stroke", "#141414");
-    line.setAttribute("stroke-width", major ? 2.2 : 1);
+    line.setAttribute("stroke", "var(--face-ink)");
+    line.setAttribute("stroke-width", major ? 2.4 : 1);
+    line.setAttribute("stroke-linecap", "round");
     ticks.appendChild(line);
     if (major) {
       const t = document.createElementNS(NS, "text");
-      const rt = 66;
+      const rt = 68;
       t.setAttribute("x", 100 + rt * Math.cos(a)); t.setAttribute("y", 100 + rt * Math.sin(a));
       t.setAttribute("text-anchor", "middle"); t.setAttribute("dominant-baseline", "central");
-      t.setAttribute("font-family", "Inter, sans-serif"); t.setAttribute("font-weight", "900");
-      t.setAttribute("font-size", "15"); t.setAttribute("fill", "#141414");
+      t.setAttribute("font-family", "Fredoka, Nunito, sans-serif"); t.setAttribute("font-weight", "600");
+      t.setAttribute("font-size", "15"); t.setAttribute("fill", "var(--face-ink)");
       t.textContent = m;
       ticks.appendChild(t);
     }
   }
 
   // --- state
-  let setMs = 25 * 60000;       // what the dial was set to
+  let setMs = 25 * 60000;       // what the timer was set to
   let remainingMs = setMs;
   let endAt = 0;
   let running = false, ringing = false;
   let raf = 0, lastTickSec = -1;
 
+  const pad = n => String(n).padStart(2, "0");
   const fmt = ms => {
     const s = Math.ceil(ms / 1000);
-    return `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+    const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    return h ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+  };
+  const describe = ms => {
+    const m = Math.floor(ms / 60000), s = Math.round((ms % 60000) / 1000);
+    return s ? `${m} min ${s} sec` : `${m} minute`;
   };
 
   function arcPath(deg) {
     if (deg <= 0.01) return "";
     if (deg >= 359.99) deg = 359.99;
     const a = (deg - 90) * Math.PI / 180;
-    const x = 100 + 96 * Math.cos(a), y = 100 + 96 * Math.sin(a);
-    return `M100 100 L100 4 A96 96 0 ${deg > 180 ? 1 : 0} 1 ${x} ${y} Z`;
+    const x = 100 + 100 * Math.cos(a), y = 100 + 100 * Math.sin(a);
+    return `M100 100 L100 0 A100 100 0 ${deg > 180 ? 1 : 0} 1 ${x} ${y} Z`;
   }
 
   function render() {
-    const deg = (remainingMs / 60000) * 6;
+    const deg = (Math.min(remainingMs, DIAL_MIN * 60000) / 60000) * 6;
     $("hand").style.transform = `rotate(${deg}deg)`;
     $("remainArc").setAttribute("d", arcPath(deg));
     readout.textContent = fmt(remainingMs);
@@ -245,15 +347,18 @@
   const audio = () => ctx || (ctx = new (window.AudioContext || window.webkitAudioContext)());
   function click() {
     if (!$("tickToggle").checked) return;
-    const c = audio(), o = c.createOscillator(), g = c.createGain();
-    o.type = "square"; o.frequency.value = 1800;
-    g.gain.setValueAtTime(0.05, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.025);
-    o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime + 0.03);
+    try {
+      const c = audio(), o = c.createOscillator(), g = c.createGain();
+      o.type = "square"; o.frequency.value = 1800;
+      g.gain.setValueAtTime(0.05, c.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.025);
+      o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime + 0.03);
+    } catch (e) {}
   }
   let ringTimer = 0;
   function ring() {
-    const c = audio();
+    let c;
+    try { c = audio(); } catch (e) { return; }
     let n = 0;
     const strike = () => {
       if (!ringing || n++ > 24) { stopRing(); return; }
@@ -284,8 +389,7 @@
   }
   function saveStats(s) { try { localStorage.setItem("kt-stats", JSON.stringify(s)); } catch (e) {} }
   function showStats() {
-    const s = loadStats();
-    const days = s.days || {};
+    const days = loadStats().days || {};
     const d = days[today()] || { blocks: 0, mins: 0 };
     $("blocks").textContent = d.blocks;
     $("mins").textContent = d.mins;
@@ -338,13 +442,18 @@
     render();
     ring();
   }
-  function setMinutes(min) {
+
+  function markChip(btn) {
+    document.querySelectorAll("#presets button").forEach(b => b.classList.toggle("on", b === btn));
+  }
+  // set a new time; if the timer was running, it keeps running with the new time
+  function setTime(ms, chip) {
     const wasRunning = running;
     if (running) pause();
     if (ringing) stopRing();
-    setMs = remainingMs = Math.max(0, Math.min(MAX_MIN, min)) * 60000;
-    statusEl.textContent = setMs ? `${min} minute block. Hit start.` : "Twist the dial to set a time.";
-    document.querySelectorAll("#presets button").forEach(b => b.classList.toggle("on", +b.dataset.min === min));
+    setMs = remainingMs = Math.max(0, Math.min(MAX_MS, Math.round(ms / 1000) * 1000));
+    statusEl.textContent = setMs ? `${describe(setMs)} block. Hit start.` : "Tap the dial to set a time.";
+    markChip(chip || document.querySelector(`#presets button[data-min="${setMs / 60000}"]`));
     render();
     if (wasRunning && setMs) start();
   }
@@ -357,7 +466,27 @@
     statusEl.textContent = "Reset. Ready when you are.";
     render();
   };
-  document.querySelectorAll("#presets button").forEach(b => b.addEventListener("click", () => setMinutes(+b.dataset.min)));
+  document.querySelectorAll("#presets button[data-min]").forEach(b =>
+    b.addEventListener("click", () => {
+      customForm.hidden = true; customBtn.setAttribute("aria-expanded", "false");
+      setTime(+b.dataset.min * 60000, b);
+    }));
+
+  // --- custom time
+  customBtn.addEventListener("click", () => {
+    customForm.hidden = !customForm.hidden;
+    customBtn.setAttribute("aria-expanded", String(!customForm.hidden));
+    if (!customForm.hidden) { $("customMin").focus(); $("customMin").select(); }
+  });
+  customForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const m = Math.max(0, Math.min(240, parseInt($("customMin").value, 10) || 0));
+    const s = Math.max(0, Math.min(59, parseInt($("customSec").value, 10) || 0));
+    $("customMin").value = m; $("customSec").value = s;
+    if (!m && !s) { statusEl.textContent = "Enter at least 1 second."; return; }
+    setTime(m * 60000 + s * 1000, customBtn);
+    customForm.hidden = true; customBtn.setAttribute("aria-expanded", "false");
+  });
 
   // --- tap or drag on the face to set the time (the number under your finger)
   let dragging = false;
@@ -382,16 +511,16 @@
   timerEl.addEventListener("pointermove", e => {
     if (!dragging) return;
     let m = minutesAt(e);
-    const prev = remainingMs / 60000;
+    const prev = Math.min(remainingMs / 60000, DIAL_MIN);
     // don't jump across the top: stop at 60 going clockwise, at 0 going back
-    if (prev >= 45 && m < 15) m = MAX_MIN;
+    if (prev >= 45 && m < 15) m = DIAL_MIN;
     else if (prev <= 15 && m > 45) m = 0;
     applyMinutes(m);
   });
   const endDrag = () => {
     if (!dragging) return;
     dragging = false; timerEl.classList.remove("dragging");
-    setMinutes(Math.round(remainingMs / 60000));
+    setTime(remainingMs);
   };
   timerEl.addEventListener("pointerup", endDrag);
   timerEl.addEventListener("pointercancel", endDrag);
@@ -400,8 +529,8 @@
   document.addEventListener("keydown", e => {
     if (e.target.tagName === "INPUT") return;
     if (e.code === "Space") { e.preventDefault(); goBtn.click(); }
-    if (!running && (e.key === "ArrowUp" || e.key === "ArrowRight")) setMinutes(Math.round(setMs / 60000) + 1);
-    if (!running && (e.key === "ArrowDown" || e.key === "ArrowLeft")) setMinutes(Math.round(setMs / 60000) - 1);
+    if (!running && (e.key === "ArrowUp" || e.key === "ArrowRight")) setTime(setMs + 60000);
+    if (!running && (e.key === "ArrowDown" || e.key === "ArrowLeft")) setTime(setMs - 60000);
   });
 
   // --- theme
