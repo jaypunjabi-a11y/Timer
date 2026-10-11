@@ -248,6 +248,16 @@
   }
   .past .wide { grid-column: 1 / -1; }
   .past .b3d { grid-column: 1 / -1; font-size: 16px; padding: 11px; border-radius: 12px; margin-bottom: 4px; }
+  .day-nav { display: flex; align-items: center; justify-content: center; gap: 10px; }
+  .day-nav .b3d { width: 42px; height: 40px; padding: 0; border-radius: 12px; font-size: 22px; line-height: 1; margin-bottom: 6px; }
+  .day-nav input {
+    font: 700 16px var(--body); color: var(--ink); background: var(--bg);
+    border: 2px solid var(--line); border-radius: 12px; padding: 7px 10px; min-width: 0; margin-bottom: 6px;
+  }
+  .day-name { text-align: center; margin: -6px 0 0; font: 600 15px var(--display); color: var(--pink-deep); }
+  .range { display: flex; gap: 8px; justify-content: center; padding-bottom: 5px; }
+  .range .b3d { font-size: 13px; padding: 6px 12px; border-radius: 999px; }
+  .range .b3d.on { outline: 2px solid var(--ink); outline-offset: 2px; }
   .sync { margin: 0; font-size: 12px; font-weight: 700; color: var(--muted); text-align: center; }
 
   @media (prefers-reduced-motion: reduce) {
@@ -338,11 +348,23 @@
 
   <section class="panel log" aria-labelledby="logTitle">
     <div class="log-head">
-      <h2 id="logTitle">Today's log</h2>
+      <h2 id="logTitle">Log</h2>
       <button class="b3d c-orange" id="addPast" aria-expanded="false" aria-controls="pastForm">+ Add block</button>
     </div>
+    <div class="day-nav">
+      <button type="button" class="b3d c-blue" id="prevDay" aria-label="Previous day">‹</button>
+      <input type="date" id="viewDate" aria-label="Show log for date">
+      <button type="button" class="b3d c-blue" id="nextDay" aria-label="Next day">›</button>
+    </div>
+    <p class="day-name" id="dayName">Today</p>
     <form class="past" id="pastForm" hidden>
-      <label for="pastCat">Category
+      <label for="pastDate">Date
+        <input id="pastDate" type="date">
+      </label>
+      <label for="pastMin">Minutes
+        <input id="pastMin" type="number" inputmode="numeric" min="1" max="600" value="25">
+      </label>
+      <label class="wide" for="pastCat">Category
         <select id="pastCat">
           <option value="exercise">Exercise</option>
           <option value="reading">Reading</option>
@@ -350,18 +372,20 @@
           <option value="meetings">Meetings</option>
         </select>
       </label>
-      <label for="pastMin">Minutes
-        <input id="pastMin" type="number" inputmode="numeric" min="1" max="600" value="25">
-      </label>
       <label class="wide" for="pastNote">Comment
         <input id="pastNote" type="text" maxlength="300" placeholder="e.g. 5 km walk, chapter 3, Q3 review">
       </label>
-      <button class="b3d c-purple" type="submit">Add to today</button>
+      <button class="b3d c-purple" type="submit">Add to log</button>
     </form>
     <div class="totals" id="todayTotals"></div>
     <ul class="entries" id="entries"></ul>
     <div class="week">
-      <h3>Last 7 days</h3>
+      <h3>Running totals</h3>
+      <div class="range" id="range" role="group" aria-label="Totals period">
+        <button type="button" class="b3d c-orange on" data-days="7">7 days</button>
+        <button type="button" class="b3d c-pink" data-days="30">30 days</button>
+        <button type="button" class="b3d c-blue" data-days="0">All time</button>
+      </div>
       <div class="totals" id="weekTotals"></div>
     </div>
     <p class="sync" id="sync">Saved on this device.</p>
@@ -495,8 +519,18 @@
   let days = {};          // "YYYY-MM-DD" -> { date, entries: [{ id, cat, mins, at, note }] }
   let remote = null;      // { col } once the account store is live
   let freshId = null;
+  let viewDate = null;    // the day the log list shows; null = today
+  let rangeDays = 7;
   const dayKey = d => d.toLocaleDateString("en-CA");
   const today = () => dayKey(new Date());
+  const shown = () => viewDate || today();
+  const parseDay = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+  const shiftDay = (k, n) => { const d = parseDay(k); d.setDate(d.getDate() + n); return dayKey(d); };
+  function dayName(k) {
+    if (k === today()) return "Today";
+    if (k === shiftDay(today(), -1)) return "Yesterday";
+    return parseDay(k).toLocaleDateString([], { weekday: "long", day: "numeric", month: "short", year: "numeric" });
+  }
   const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
   const fmtMins = m => m >= 60 ? `${Math.floor(m / 60)}h ${m % 60 ? (m % 60) + "m" : ""}`.trim() : `${m}m`;
 
@@ -533,16 +567,17 @@
       });
     renderLog();
   }
-  function addEntry(cat, mins, note, at) {
-    const date = today();
+  function addEntry(cat, mins, note, date) {
+    date = date || today();
     if (!days[date]) days[date] = { date, entries: [] };
-    const e = { id: newId(), cat, mins, at: at || Date.now(), note: note || "" };
+    const e = { id: newId(), cat, mins, at: date === today() ? Date.now() : 0, note: note || "" };
+    viewDate = date === today() ? null : date;
     days[date].entries.push(e);
     freshId = e.id;
     saveDay(date);
   }
   function findEntry(id) {
-    const day = days[today()];
+    const day = days[shown()];
     return day ? day.entries.find(e => e.id === id) : null;
   }
 
@@ -564,11 +599,16 @@
     const a = document.activeElement;
     if (a && logEl().contains(a) && a.classList.contains("note")) { pendingRender = true; return; }
     pendingRender = false;
-    const todays = (days[today()] || { entries: [] }).entries.slice().sort((x, y) => (y.at || 0) - (x.at || 0));
+    const todayEntries = (days[today()] || { entries: [] }).entries;
+    const todays = (days[shown()] || { entries: [] }).entries.slice().sort((x, y) => (y.at || 0) - (x.at || 0));
+    const vd = $("viewDate");
+    vd.max = today(); vd.value = shown();
+    $("dayName").textContent = dayName(shown());
+    $("nextDay").disabled = shown() >= today();
 
     // headline stats
-    $("blocks").textContent = todays.length;
-    $("mins").textContent = todays.reduce((a, e) => a + e.mins, 0);
+    $("blocks").textContent = todayEntries.length;
+    $("mins").textContent = todayEntries.reduce((a, e) => a + e.mins, 0);
     let streak = 0;
     const day = new Date();
     const has = d => days[dayKey(d)] && days[dayKey(d)].entries.length;
@@ -577,19 +617,19 @@
     $("streak").textContent = streak;
 
     totalsInto($("todayTotals"), todays);
-    const week = [];
-    for (let i = 0; i < 7; i++) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      const v = days[dayKey(d)]; if (v) week.push(...v.entries);
-    }
-    totalsInto($("weekTotals"), week);
+    const from = rangeDays ? shiftDay(today(), -(rangeDays - 1)) : "";
+    const ranged = [];
+    Object.keys(days).forEach(k => { if (k >= from) ranged.push(...days[k].entries); });
+    totalsInto($("weekTotals"), ranged);
 
     const list = logEl();
     list.textContent = "";
     if (!todays.length) {
       const p = document.createElement("p");
       p.className = "empty";
-      p.textContent = "No blocks yet today. Finish a timer, or tap + Add block for one you did earlier.";
+      p.textContent = shown() === today()
+        ? "No blocks yet today. Finish a timer, or tap + Add block for one you did earlier."
+        : "Nothing logged on this day. Tap + Add block to add one.";
       list.appendChild(p);
       return;
     }
@@ -606,7 +646,7 @@
       sel.value = e.cat || "";
       sel.addEventListener("change", () => {
         const x = findEntry(e.id); if (!x || !sel.value) return;
-        x.cat = sel.value; saveDay(today());
+        x.cat = sel.value; saveDay(shown());
       });
 
       const meta = document.createElement("span");
@@ -629,9 +669,9 @@
           return;
         }
         clearTimeout(armed);
-        const d = days[today()];
+        const d = days[shown()];
         d.entries = d.entries.filter(x => x.id !== e.id);
-        saveDay(today());
+        saveDay(shown());
       });
 
       const note = document.createElement("input");
@@ -641,7 +681,7 @@
       note.value = e.note || "";
       note.addEventListener("change", () => {
         const x = findEntry(e.id); if (!x || x.note === note.value) return;
-        x.note = note.value; saveDay(today());
+        x.note = note.value; saveDay(shown());
       });
       note.addEventListener("keydown", ev => { if (ev.key === "Enter") note.blur(); });
 
@@ -661,7 +701,7 @@
     if (!uid) return;
     const col = db.collection("data/users/" + uid);
     let first = true;
-    col.orderBy("date", "desc").limit(400).onSnapshot(snap => {
+    col.orderBy("date", "desc").limit(1000).onSnapshot(snap => {
       const local = days;
       const next = {};
       snap.docs.forEach(d => {
@@ -710,16 +750,35 @@
     const f = $("pastForm");
     f.hidden = !f.hidden;
     $("addPast").setAttribute("aria-expanded", String(!f.hidden));
-    if (!f.hidden) $("pastMin").focus();
+    if (!f.hidden) { $("pastDate").max = today(); $("pastDate").value = shown(); $("pastMin").focus(); }
   });
   $("pastForm").addEventListener("submit", e => {
     e.preventDefault();
     const mins = Math.max(1, Math.min(600, parseInt($("pastMin").value, 10) || 0));
-    addEntry($("pastCat").value, mins, $("pastNote").value.trim());
+    let date = $("pastDate").value || today();
+    if (date > today()) date = today();
+    addEntry($("pastCat").value, mins, $("pastNote").value.trim(), date);
     $("pastNote").value = "";
     $("pastForm").hidden = true; $("addPast").setAttribute("aria-expanded", "false");
-    statusEl.textContent = `Logged ${mins} min of ${CATS[$("pastCat").value]}.`;
+    statusEl.textContent = `Logged ${mins} min of ${CATS[$("pastCat").value]} (${dayName(date)}).`;
   });
+
+  // move between days
+  $("prevDay").addEventListener("click", () => { viewDate = shiftDay(shown(), -1); freshId = null; renderLog(); });
+  $("nextDay").addEventListener("click", () => {
+    const n = shiftDay(shown(), 1);
+    viewDate = n >= today() ? null : n; freshId = null; renderLog();
+  });
+  $("viewDate").addEventListener("change", e => {
+    const v = e.target.value;
+    if (!v) return;
+    viewDate = v >= today() ? null : v; freshId = null; renderLog();
+  });
+  document.querySelectorAll("#range button").forEach(b => b.addEventListener("click", () => {
+    rangeDays = +b.dataset.days;
+    document.querySelectorAll("#range button").forEach(x => x.classList.toggle("on", x === b));
+    renderLog();
+  }));
 
   // --- run loop
   function loop() {
